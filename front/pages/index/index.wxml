@@ -1,0 +1,47 @@
+<!-- index.wxml -->
+<view class="container">
+  <!-- 骨架屏 -->
+  <block wx:if="{{loading}}">
+    <view class="skeleton banner-skeleton"></view>
+    <view class="skeleton-title"></view>
+    <view class="grid-skeleton">
+      <view wx:for="{{8}}" wx:key="*this" class="skeleton-item"></view>
+    </view>
+  </block>
+
+  <!-- 实际内容 -->
+  <block wx:else>
+    <!-- 健康资讯轮播 -->
+    <swiper class="banner-swiper" autoplay interval="5000" circular>
+      <block wx:for="{{banners}}" wx:key="img">
+        <swiper-item>
+          <image 
+            src="{{item.img}}" 
+            class="banner-image" 
+            mode="aspectFill"
+            bindtap="handleBannerTap"
+            data-index="{{index}}"
+          />
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <!-- 快捷入口 -->
+    <view class="quick-access">
+      <view class="section-title">快捷入口</view>
+      <view class="grid-container">
+        <block wx:for="{{quickEntries}}" wx:key="text">
+          <view 
+            class="grid-item"
+            bindtap="handleEntryTap"
+            data-index="{{index}}"
+            hover-class="grid-item-hover"
+          >
+            <image src="{{item.icon}}" class="entry-icon"/>
+            <text class="entry-text">{{item.text}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </block>
+</view>
