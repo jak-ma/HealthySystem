@@ -5,13 +5,22 @@
     "pages/index/index",
     "pages/health/health",
     "pages/diet/diet",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/weather/weather"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
     "navigationBarTitleText": "银龄健康助手",
     "navigationBarBackgroundColor": "#4CAF50"
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于获取当地天气信息"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "tabBar": {
     "color": "#7A7E83",
     "selectedColor": "#4CAF50",
@@ -41,6 +50,5 @@
         "selectedIconPath": "images/tab/mine_selected.png"
       }
     ]
-  },
-  "usingComponents": {}
+  }
 }

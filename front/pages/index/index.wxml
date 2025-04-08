@@ -1,5 +1,17 @@
 <!-- index.wxml -->
 <view class="container">
+  <!-- 城市手动输入弹窗 -->
+  <view class="city-input-modal" wx:if="{{showCityInput}}">
+    <view class="city-input-content">
+      <view class="city-input-title">请输入城市名称</view>
+      <input class="city-input" placeholder="例如：北京、上海、广州" bindinput="inputCity" value="{{manualCityInput}}"/>
+      <view class="city-input-buttons">
+        <button class="city-input-cancel" bindtap="cancelCityInput">取消</button>
+        <button class="city-input-submit" bindtap="submitCity">确定</button>
+      </view>
+    </view>
+  </view>
+
   <!-- 骨架屏 -->
   <block wx:if="{{loading}}">
     <view class="skeleton banner-skeleton"></view>
@@ -13,15 +25,22 @@
   <block wx:else>
     <!-- 健康资讯轮播 -->
     <swiper class="banner-swiper" autoplay interval="5000" circular>
-      <block wx:for="{{banners}}" wx:key="img">
+      <block wx:for="{{banners}}" wx:key="index">
         <swiper-item>
-          <image 
-            src="{{item.img}}" 
-            class="banner-image" 
-            mode="aspectFill"
-            bindtap="handleBannerTap"
-            data-index="{{index}}"
-          />
+          <!-- 普通图片轮播图 -->
+          <block wx:if="{{!item.type || item.type !== 'weather'}}">
+            <image 
+              src="{{item.img}}" 
+              class="banner-image" 
+              mode="aspectFill"
+              bindtap="handleBannerTap"
+              data-index="{{index}}"
+            />
+          </block>
+          <!-- 天气轮播图 -->
+          <block wx:else>
+            <include src="../weather/weather.wxml" />
+          </block>
         </swiper-item>
       </block>
     </swiper>

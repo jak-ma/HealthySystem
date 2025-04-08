@@ -60,6 +60,15 @@
   height: 100%;
 }
 
+/* 天气轮播图样式 */
+.banner-swiper .weather-container {
+  height: 320rpx;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+
+
 /* 快捷入口样式 */
 .quick-access {
   background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
