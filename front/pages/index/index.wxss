@@ -67,6 +67,8 @@
   padding: 20rpx;
 }
 
+/* 引入天气轮播图样式 */
+@import "./weather-banner.wxss";
 
 
 /* 快捷入口样式 */

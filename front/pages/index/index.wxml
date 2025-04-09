@@ -39,7 +39,7 @@
           </block>
           <!-- 天气轮播图 -->
           <block wx:else>
-            <include src="../weather/weather.wxml" />
+            <include src="weather-banner.wxml" />
           </block>
         </swiper-item>
       </block>

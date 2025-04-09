@@ -10,6 +10,7 @@ Page({
     ],
     // 天气相关数据
     cityName: '北京', // 默认城市
+    detailedLocation: '', // 详细位置信息（街道/小区）
     manualCityInput: '', // 手动输入的城市名
     showCityInput: false, // 是否显示城市输入框
     temperature: '--', // 温度
@@ -37,7 +38,8 @@ Page({
 
   onLoad() {
     this.checkLoginStatus();
-    this.getLocation();
+    // 先检查位置授权，而不是直接获取位置
+    this.checkLocationAuth();
     
     setTimeout(() => {
       this.setData({ loading: false });
@@ -57,17 +59,61 @@ Page({
           currentLatitude: res.latitude,
           currentLongitude: res.longitude
         });
+        // 获取详细位置信息
+        that.getDetailedLocation(res.latitude, res.longitude);
+        // 获取天气数据
         that.getWeatherData(res.latitude, res.longitude);
       },
       fail: function(err) {
         console.error('定位失败:', err);
         wx.hideLoading();
-        wx.showToast({
-          title: '定位失败，使用默认位置',
-          icon: 'none'
-        });
-        // 使用北京默认坐标
-        that.getWeatherData(39.90403, 116.407526);
+        
+        // 检查失败原因
+        if (err.errMsg.indexOf('auth deny') >= 0 || err.errMsg.indexOf('authorize') >= 0) {
+          // 授权问题导致的失败
+          wx.showModal({
+            title: '位置授权',
+            content: '获取位置失败，是否重新授权？',
+            success: function(res) {
+              if (res.confirm) {
+                // 打开设置页面让用户重新授权
+                wx.openSetting({
+                  success: function(settingRes) {
+                    if (settingRes.authSetting['scope.userLocation']) {
+                      // 用户重新授权了，再次获取位置
+                      that.getLocation();
+                    } else {
+                      // 用户仍然拒绝授权，使用默认位置
+                      wx.showToast({
+                        title: '未获得位置授权，使用默认位置',
+                        icon: 'none',
+                        duration: 2000
+                      });
+                      // 使用北京默认坐标
+                      that.getWeatherData(39.90403, 116.407526);
+                    }
+                  }
+                });
+              } else {
+                // 用户点击取消，使用默认位置
+                wx.showToast({
+                  title: '使用默认位置',
+                  icon: 'none'
+                });
+                // 使用北京默认坐标
+                that.getWeatherData(39.90403, 116.407526);
+              }
+            }
+          });
+        } else {
+          // 其他原因导致的失败
+          wx.showToast({
+            title: '定位失败，使用默认位置',
+            icon: 'none'
+          });
+          // 使用北京默认坐标
+          that.getWeatherData(39.90403, 116.407526);
+        }
       }
     });
   },
@@ -125,13 +171,58 @@ Page({
     });
   },
 
-  // 刷新天气
+  // 刷新天气 - 始终获取当前位置
   refreshWeather: function() {
-    if (this.data.currentLatitude && this.data.currentLongitude) {
-      this.getWeatherData(this.data.currentLatitude, this.data.currentLongitude);
-    } else {
-      this.getLocation();
-    }
+    // 直接调用获取位置方法，不再使用缓存的位置信息
+    this.getLocation();
+  },
+
+  // 检查位置授权状态
+  checkLocationAuth: function() {
+    const that = this;
+    wx.getSetting({
+      success: function(res) {
+        // 如果未授权位置信息
+        if (!res.authSetting['scope.userLocation']) {
+          wx.showModal({
+            title: '需要位置授权',
+            content: '为了提供准确的天气信息，需要获取您的位置信息',
+            success: function(modalRes) {
+              if (modalRes.confirm) {
+                // 用户点击确定，打开授权设置页面
+                wx.openSetting({
+                  success: function(settingRes) {
+                    if (settingRes.authSetting['scope.userLocation']) {
+                      // 获取到授权，开始获取位置
+                      that.getLocation();
+                    } else {
+                      // 用户拒绝授权，使用默认位置
+                      wx.showToast({
+                        title: '未获得位置授权，使用默认位置',
+                        icon: 'none'
+                      });
+                      // 使用北京默认坐标
+                      that.getWeatherData(39.90403, 116.407526);
+                    }
+                  }
+                });
+              } else {
+                // 用户点击取消，使用默认位置
+                wx.showToast({
+                  title: '未获得位置授权，使用默认位置',
+                  icon: 'none'
+                });
+                // 使用北京默认坐标
+                that.getWeatherData(39.90403, 116.407526);
+              }
+            }
+          });
+        } else {
+          // 已授权，直接获取位置
+          that.getLocation();
+        }
+      }
+    });
   },
 
   // 切换城市
@@ -169,6 +260,7 @@ Page({
             currentLatitude: parseFloat(latitude),
             currentLongitude: parseFloat(longitude)
           });
+          that.getDetailedLocation(latitude, longitude);
           that.getWeatherData(latitude, longitude);
         } else {
           wx.showToast({ title: '城市查询失败', icon: 'none' });
@@ -230,5 +322,50 @@ Page({
 
   getWeatherIconCode: function(code) {
     return code || '100';
+  },
+  
+  // 获取详细位置信息
+  getDetailedLocation: function(latitude, longitude) {
+    const that = this;
+    
+    // 使用高德地图逆地理编码API获取详细位置信息
+    wx.request({
+      url: 'https://restapi.amap.com/v3/geocode/regeo',
+      data: {
+        key: 'e3728f3d140c952f7abf5e526803deae',
+        location: `${longitude},${latitude}`,
+        extensions: 'base',
+        poitype: '',
+        radius: 1000,
+        roadlevel: 0
+      },
+      success: function(res) {
+        console.log('逆地理编码结果:', res);
+        if (res.data.status === '1' && res.data.regeocode) {
+          const addressComponent = res.data.regeocode.addressComponent;
+          const township = addressComponent.township || '';
+          const streetNumber = addressComponent.streetNumber || {};
+          const street = streetNumber.street || '';
+          const number = streetNumber.number || '';
+          
+          // 组合详细地址信息
+          let detailedLocation = '';
+          
+          if (street) {
+            detailedLocation = street + (number ? number : '');
+          } else if (township) {
+            detailedLocation = township;
+          }
+          
+          // 更新详细位置信息
+          that.setData({
+            detailedLocation: detailedLocation
+          });
+        }
+      },
+      fail: function(err) {
+        console.error('获取详细位置信息失败:', err);
+      }
+    });
   }
 });
