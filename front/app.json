@@ -6,7 +6,8 @@
     "pages/health/health",
     "pages/diet/diet",
     "pages/mine/mine",
-    "pages/weather/weather"
+    "pages/weather/weather",
+    "pages/reminder/reminder"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -28,6 +29,12 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home_selected.png"
+      },
+      {
+        "pagePath": "pages/reminder/reminder",
+        "text": "提醒",
         "iconPath": "images/tab/home.png",
         "selectedIconPath": "images/tab/home_selected.png"
       },
