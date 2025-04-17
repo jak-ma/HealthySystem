@@ -1,0 +1,120 @@
+/* weather.wxss */
+.weather-container {
+  background: linear-gradient(135deg, #6a9eda 0%, #3f7dd3 100%);
+  color: white;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.2);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 城市选择区域 */
+.city-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.city-info {
+  display: flex;
+  align-items: center;
+}
+
+.city-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-right: 10rpx;
+}
+
+.location-icon {
+  font-size: 32rpx;
+  padding: 6rpx;
+}
+
+.city-change {
+  font-size: 24rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 30rpx;
+}
+
+/* 天气信息区域 */
+.weather-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.weather-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 20rpx;
+}
+
+.temperature-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temperature {
+  font-size: 80rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.degree {
+  font-size: 40rpx;
+  margin-top: 10rpx;
+}
+
+.weather-desc {
+  font-size: 32rpx;
+  margin-bottom: 30rpx;
+}
+
+.weather-details {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  padding: 20rpx 0;
+  margin-top: 20rpx;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 6rpx;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 更新时间 */
+.update-time {
+  font-size: 22rpx;
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 20rpx;
+}

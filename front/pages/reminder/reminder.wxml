@@ -1,0 +1,33 @@
+<!--pages/remind/remind.wxml-->
+<view class="container">
+  <text class="title">请手动添加需要提醒使用的药品的名称，服用时间，注意事项</text>
+  <input class="input" placeholder="请输入药品名称" value="{{inputValue}}" bindinput="onInput" />
+  <picker mode="time" value="{{inputTime}}" start="00:00" end="23:59" bindchange="onTimeInput" class="picker">
+    <view class="picker-text">当前选择的服药时间: {{inputTime}}</view>
+  </picker>
+  <input class="input" placeholder="请输入注意事项" value="{{inputNotes}}" bindinput="onNotesInput" />
+  <button bindtap="addMedecineremind" type="primary" class="add-button">添加</button>
+  <view class="todo-container">
+    <view wx:for="{{medecines}}" wx:key="id" class="todo-item {{item.completed? 'completed' : ''}}">
+      <checkbox checked="{{item.completed}}" bindchange="complete" data-todoId="{{item._id}}" class="checkbox" />
+      <text>{{item.name}}</text>
+      <text>服药时间: {{item.time}}</text>
+      <button bindtap="editTime" data-id="{{item._id}}" class="edit-button">修改时间</button>
+      <text>注意事项: {{item.notes}}</text>
+      <button bindtap="editNotes" data-id="{{item._id}}" class="edit-button">修改注意事项</button>
+      <text wx:if="{{!item.completed}}">距离提醒还有: {{calculateRemainTime(item.remindTimeInMinutes)}}分钟</text>
+      <button bindtap="deleteMedecineremind" data-todoId="{{item._id}}" type="warn" class="delete-button">删除</button>
+    </view>
+  </view>
+  <!-- 自定义输入模态框 -->
+  <view class="modal-mask" wx:if="{{showInputModal}}" bindtap="hideInputModal">
+    <view class="modal-container">
+      <view class="modal-title">{{inputModalTitle}}</view>
+      <input class="modal-input" placeholder="{{inputModalPlaceholder}}" bindinput="onInputModalInput" catchtap="preventBubble" />
+      <view class="modal-buttons">
+        <button bindtap="hideInputModal">取消</button>
+        <button bindtap="confirmInputModal">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

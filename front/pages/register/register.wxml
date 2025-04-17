@@ -1,0 +1,41 @@
+<!--pages/register/register.wxml-->
+<view class="container">
+  <form bindsubmit="onRegister">
+    <view class="form-group">
+      <text>用户名</text>
+      <input 
+        name="username" 
+        placeholder="请输入用户名" 
+        value="{{username}}"
+        data-field="username"
+        bindinput="handleInputChange"
+      />
+    </view>
+    
+    <view class="form-group">
+      <text>密码</text>
+      <input 
+        name="password" 
+        type="password" 
+        placeholder="请输入密码" 
+        value="{{password}}"
+        data-field="password"
+        bindinput="handleInputChange"
+      />
+    </view>
+    
+    <view class="form-group">
+      <text>确认密码</text>
+      <input 
+        name="confirmPassword" 
+        type="password" 
+        placeholder="请再次输入密码" 
+        value="{{confirmPassword}}"
+        data-field="confirmPassword"
+        bindinput="handleInputChange"
+      />
+    </view>
+    
+    <button form-type="submit" class="submit-btn">注册</button>
+  </form>
+</view>

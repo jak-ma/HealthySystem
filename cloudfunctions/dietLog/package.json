@@ -1,0 +1,10 @@
+{
+    "name": "diet-log",
+    "version": "1.0.0",
+    "description": "云函数：上传饮食日志",
+    "main": "index.js",
+    "dependencies": {
+      "wx-server-sdk": "latest"
+    }
+  }
+  

@@ -1,0 +1,52 @@
+<!-- weather-banner.wxml -->
+<view class="weather-banner">
+  <!-- 城市选择区域 -->
+  <view class="city-section">
+    <view class="city-info">
+      <view class="location-container">
+        <text class="city-name">{{cityName}}</text>
+        <text class="detailed-location" wx:if="{{detailedLocation}}">{{detailedLocation}}</text>
+      </view>
+      <text class="location-icon" bindtap="refreshWeather">🔄</text>
+    </view>
+    <view class="city-change" bindtap="changeCity">切换城市</view>
+  </view>
+
+  <!-- 天气信息区域 -->
+  <view class="weather-info">
+    <!-- 天气图标和温度 -->
+    <view class="weather-main">
+      <image class="weather-icon" src="/icons/weather/{{weatherIconCode}}.svg" mode="aspectFit"></image>
+      <view class="temperature-container">
+        <text class="temperature">{{temperature}}</text>
+        <text class="degree">°C</text>
+      </view>
+    </view>
+    
+    <!-- 天气描述 -->
+    <view class="weather-desc">
+      <text>{{weatherDesc}}</text>
+    </view>
+    
+    <!-- 其他天气数据 -->
+    <view class="weather-details">
+      <view class="detail-item">
+        <text class="detail-label">湿度</text>
+        <text class="detail-value">{{humidity}}%</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">风向</text>
+        <text class="detail-value">{{windDirection}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">风力</text>
+        <text class="detail-value">{{windScale}}级</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 更新时间 -->
+  <view class="update-time">
+    <text>更新时间: {{updateTime}}</text>
+  </view>
+</view>

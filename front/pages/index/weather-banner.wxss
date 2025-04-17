@@ -1,0 +1,126 @@
+/* weather-banner.wxss */
+.weather-banner {
+  background: linear-gradient(135deg, #6a9eda 0%, #3f7dd3 100%);
+  color: white;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.2);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 城市选择区域 */
+.weather-banner .city-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.weather-banner .city-info {
+  display: flex;
+  align-items: center;
+}
+
+.weather-banner .location-container {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10rpx;
+}
+
+.weather-banner .city-name {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.weather-banner .detailed-location {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-top: 4rpx;
+}
+
+.weather-banner .location-icon {
+  font-size: 32rpx;
+  padding: 6rpx;
+}
+
+.weather-banner .city-change {
+  font-size: 24rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 30rpx;
+}
+
+/* 天气信息区域 */
+.weather-banner .weather-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-banner .weather-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.weather-banner .weather-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 20rpx;
+}
+
+.weather-banner .temperature-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.weather-banner .temperature {
+  font-size: 80rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.weather-banner .degree {
+  font-size: 40rpx;
+  margin-top: 10rpx;
+}
+
+.weather-banner .weather-desc {
+  font-size: 32rpx;
+  margin-bottom: 30rpx;
+}
+
+.weather-banner .weather-details {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20rpx;
+}
+
+.weather-banner .detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.weather-banner .detail-label {
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 6rpx;
+}
+
+.weather-banner .detail-value {
+  font-size: 28rpx;
+}
+
+.weather-banner .update-time {
+  font-size: 22rpx;
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 20rpx;
+}
