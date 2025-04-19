@@ -31,11 +31,12 @@ Page({
             '/images/diet_icon/icon_lunch.png',
             '/images/diet_icon/icon_dinner.png'
         ],
-        hasUploaded: {
-        }, // 饮食记录，存储各餐次最新上传时间
+        hasUploaded: {}, // 饮食记录，存储各餐次最新上传时间
         todaySummary: null, // 今日汇总
         loading: true, // 加载状态
         lastRefreshDate: null, // 记录上次刷新日期
+        foodInfo: null,      // 存储识别结果（食物名称、热量等）
+        tempFileURL: ''      // 临时存储图片路径用于页面显示
 
     },
     /*********************************
@@ -418,8 +419,8 @@ Page({
         // 实时更新云端数据
         this.loadReminders()
     },
-    
-    
+
+
     /**
      * 生命周期函数
      */
@@ -427,7 +428,7 @@ Page({
         // 安全调用检查，用户变更检查，当用户变更时重新加载数据
         if (typeof this.checkUserChanged === 'function' && this.checkUserChanged()) {
             this.loadReminders(),
-            this.loadDietLog()
+                this.loadDietLog()
         }
 
         // 更新最后登录用户
@@ -483,7 +484,9 @@ Page({
     /*********************************
      * 饮食日志：加载
      *********************************/
-    //加载饮食日志
+    /**
+     * 从云端加载饮食日志
+     */
     async loadDietLog() {
         try {
             //调用云函数，result存储云函数返回的结果
@@ -585,7 +588,7 @@ Page({
     },
 
     /**
-     * 上传云函数进入云存储
+     * 上传图片操作，进行云存储并写入饮食日志数据库，自动识别食物名称
      * @param {*} filePath 图片的临时路径
      * @param {*} mealType 餐次类型
      */
@@ -601,7 +604,23 @@ Page({
                 filePath,
                 config: { env: this.data.envId }
             });
-
+            
+            //调用云函数识别食物种类
+            const recognitionRes = await wx.cloud.callFunction({
+                name: 'foodRecognition',              // 云函数名称
+                data: { fileID: fileID }    // 传入云端图片ID
+            });
+            
+            //处理识别结果
+            wx.hideLoading()
+            if (recognitionRes.result.success) {
+                this.setData({
+                    foodInfo: recognitionRes.result,//更新识别结果
+                    tempFileURL: filePath//图片的临时路径，用于展示
+                })
+            } else {
+                wx.showToast({ title: '识别失败', icon: 'none' })
+            }
             //调用formatTime记录标准化时间，生成格式化时间字符串，例如“14:30”，newDate()会返回一个时间对象
             const currentTime = this.formatTime(new Date()); // 调用格式化方法
 
@@ -611,7 +630,7 @@ Page({
             });
 
             //调用方法保存到数据库
-            await this.saveDietRecord(mealType, fileID);
+            await this.saveDietRecord(mealType, fileID ,recognitionRes);
 
         } catch (err) {//捕获异常
             console.error('上传失败:', err);
@@ -625,14 +644,16 @@ Page({
      * 向数据库中diet_logs表中增加记录
      * @param {*} mealType //餐次类型
      * @param {*} fileID //上传文件的云存储地址
+     * @param {*} recognitionRes  //图片识别的结果
      */
-    async saveDietRecord(mealType, fileID) {
+    async saveDietRecord(mealType, fileID,recognitionRes) {
         //用于构建数据库记录内容
         const record = {
             date: this.getTodayDate(), //自动生成当天的格式化时间字符串
             mealType, //餐次类型
+            foodName: recognitionRes.result.foodName,//存储食物名称
+            calorie : recognitionRes.result.calorie,//存储单位热量
             imageUrl: fileID, //上传的文件存储地址
-            timestamp: Date.now(),//时间戳
             calories: this.estimateCalories(mealType), //通过餐次计算得出的卡路里（后续调用AI计算）
             status: 'uploaded'//固定值
         }
@@ -659,6 +680,7 @@ Page({
         const cal = (this.data.todaySummary?.calories || 0) + add
         this.setData({ [`hasUploaded.${mealType}`]: time, todaySummary: { calories: cal, progress: Math.min(Math.round(cal / 20), 100) } })
     },
+
 
 
     /*********************************
