@@ -1,106 +1,103 @@
 <!-- 饮食专区主界面 -->
 <view class="diet-page">
-  <!-- 顶部标题栏 -->
-  <view class="header">
-    <text class="title">饮食专区</text>
-    <image class="help-icon" src="/images/diet_icon/icon_help.png" bindtap="showHelp" />
-  </view>
-
-  <!-- 第一部分：营养食谱 -->
-  <view class="section nutrition-section">
-    <view class="section-header">
-      <image class="section-icon" src="/images/diet_icon/icon_nutrition.png" />
-      <text class="section-title">营养食谱</text>
-      <text class="section-more" bindtap="navToRecipes">更多 ></text>
+    <!-- 顶部标题栏 -->
+    <view class="header">
+        <text class="title">饮食专区</text>
+        <image class="help-icon" src="/images/diet_icon/icon_help.png" bindtap="showHelp" />
     </view>
-    
-    <scroll-view class="recipe-scroll" scroll-x>
-      <view class="recipe-card" wx:for="{{recommendRecipes}}" wx:key="id" bindtap="viewRecipe" data-id="{{item.id}}">
-        <image class="recipe-image" src="{{item.image}}" mode="aspectFill" lazy-load />
-        <view class="recipe-info">
-          <text class="recipe-name">{{item.name}}</text>
-          <view class="recipe-tags">
-            <text class="tag" wx:for="{{item.tags.slice(0,2)}}" wx:key="*this">{{item}}</text>
-          </view>
+
+    <!-- 第一部分：营养食谱 -->
+    <view class="section nutrition-section">
+        <view class="section-header">
+            <image class="section-icon" src="/images/diet_icon/icon_nutrition.png" />
+            <text class="section-title">营养食谱</text>
+            <text class="section-more" bindtap="navToRecipes">更多 ></text>
         </view>
-      </view>
-    </scroll-view>
-    
-    <!-- 个性化推荐按钮 -->
-    <view class="recommend-btn" bindtap="getPersonalRecommend">
-      <image class="icon" src="/images/diet_icon/icon_recommend.png" />
-      <text>获取个性化推荐</text>
-    </view>
-  </view>
 
-  <!-- 第二部分：用餐提醒 -->
-  <view class="section reminder-section">
-    <view class="section-header">
-      <image class="section-icon" src="/images/diet_icon/icon_reminder.png" />
-      <text class="section-title">用餐提醒</text>
-    </view>
-    
-    <view class="reminder-content">
-      <view class="reminder-item" wx:for="{{mealReminders}}" wx:key="time">
-        <view class="time-box">
-          <text class="time">{{item.time}}</text>
-          <text class="meal-type">{{item.type}}</text>
+        <scroll-view class="recipe-scroll" scroll-x>
+            <view class="recipe-card" wx:for="{{recommendRecipes}}" wx:key="id" bindtap="viewRecipe" data-id="{{item.id}}">
+                <image class="recipe-image" src="{{item.image}}" mode="aspectFill" lazy-load />
+                <view class="recipe-info">
+                    <text class="recipe-name">{{item.name}}</text>
+                    <view class="recipe-tags">
+                        <text class="tag" wx:for="{{item.tags.slice(0,2)}}" wx:key="*this">{{item}}</text>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <!-- 个性化推荐按钮 -->
+        <view class="recommend-btn" bindtap="getPersonalRecommend">
+            <image class="icon" src="/images/diet_icon/icon_recommend.png" />
+            <text>获取个性化推荐</text>
         </view>
-        <switch checked="{{item.enabled}}" bindchange="toggleReminder" data-index="{{index}}" />
-      </view>
-      
-      <!-- 原代码保持不动，确认绑定关系正确 -->
-<view class="add-reminder" bindtap="addNewReminder">
-  <image class="add-icon" src="/images/diet_icon/icon_add.png" />
-  <text>添加用餐提醒</text>
-</view>
     </view>
-  </view>
 
- <!-- 第三部分：饮食日志 -->
-<view class="section log-section">
-  <view class="section-header">
-    <image class="section-icon" src="/images/diet_icon/icon_log.png" />
-    <text class="section-title">饮食日志</text>
-    <text class="section-more" bindtap="navigateToDietLog">历史记录 ></text>
-  </view>
+    <!-- 第二部分：用餐提醒 -->
+    <view class="section reminder-section">
+        <view class="section-header">
+            <image class="section-icon" src="/images/diet_icon/icon_reminder.png" />
+            <text class="section-title">用餐提醒</text>
+        </view>
 
-  <!-- 上传记录卡片区域 -->
-  <view class="log-upload">
-    <view class="upload-card"
-      wx:for="{{meals}}"
-      wx:key="*this"
-      bindtap="uploadMeal"
-      data-type="{{item}}">
+        <!-- 修改后的提醒项（移除了滑动事件，添加长按事件） -->
+        <view class="reminder-item" wx:for="{{mealReminders}}" wx:key="_id" bindlongpress="handleLongPress" data-id="{{item._id}}">
+            <view class="time-box">
+                <text class="time">{{item.time}}</text>
+                <text class="meal-type">{{item.type}}</text>
+            </view>
+            <switch checked="{{item.enabled}}" bindchange="toggleReminder" data-id="{{item._id}}" />
+        </view>
 
-      <image class="camera-icon" src="{{mealIcons[index]}}" />
-      <text>{{item}}记录</text>
-      <text class="upload-time" wx:if="{{hasUploaded[item]}}">{{hasUploaded[item]}}</text>
+        <!-- 时间选择器 -->
+        <view wx:if="{{showTimePicker}}" class="time-picker-modal">
+            <view class="modal-mask" catchtap="hideTimePicker"></view>
+            <view class="modal-content">
+                <picker mode="time" value="{{currentTime}}" start="00:00" end="23:59" bindchange="handleTimeConfirm" class="large-font-picker">
+                    <view class="time-display">选择时间：{{currentTime}}</view>
+                </picker>
+                <button class="confirm-btn" bindtap="confirmTimeSelection">确认</button>
+            </view>
+        </view>
     </view>
-  </view>
 
-  <!-- 今日汇总 -->
-  <view class="today-summary" wx:if="{{todaySummary}}">
-    <text>今日总摄入：{{todaySummary.calories}}千卡</text>
-    <progress percent="{{todaySummary.progress}}" stroke-width="6" />
-  </view>
-</view>
+    <!-- 第三部分：饮食日志 -->
+    <view class="section log-section">
+        <view class="section-header">
+            <image class="section-icon" src="/images/diet_icon/icon_log.png" />
+            <text class="section-title">饮食日志</text>
+            <text class="section-more" bindtap="navigateToDietLog">历史记录 ></text>
+        </view>
+
+        <!-- 上传记录卡片区域 -->
+        <view class="log-upload">
+            <view class="upload-card" wx:for="{{meals}}" wx:key="*this" bindtap="uploadMeal" data-type="{{item}}">
+
+                <image class="camera-icon" src="{{mealIcons[index]}}" />
+                <text>{{item}}记录</text>
+                <text class="upload-time" wx:if="{{hasUploaded[item]}}">{{hasUploaded[item]}}
+                </text>
+            </view>
+        </view>
+
+        <!-- 今日汇总 -->
+        <view class="today-summary" wx:if="{{todaySummary}}">
+            <text>今日总摄入：{{todaySummary.calories}}千卡</text>
+            <progress percent="{{todaySummary.progress}}" stroke-width="6" />
+        </view>
+    </view>
 
 
-<!-- 帮助提示浮层 -->
-<view class="help-modal" wx:if="{{showHelpModal}}" catchtap="hideHelp">
-  <view class="help-content">
-    <text class="help-title">饮食专区使用帮助</text>
-    <text class="help-text">1. 点击食谱图片查看详细做法\n2. 长按提醒时间可进行修改\n3. 拍照上传时请保持光线充足</text>
-    <button class="close-btn" bindtap="hideHelp">我知道了</button>
-  </view>
-</view>
+    <!-- 帮助提示浮层 -->
+    <view class="help-modal" wx:if="{{showHelpModal}}" catchtap="hideHelp">
+        <view class="help-content">
+            <text class="help-title">饮食专区使用帮助</text>
+            <text class="help-text">1. 点击食谱图片查看详细做法\n2. 长按提醒时间可进行修改\n3. 拍照上传时请保持光线充足</text>
+            <button class="close-btn" bindtap="hideHelp">我知道了</button>
+        </view>
+    </view>
 
 </view>
 
 <!-- 隐藏的画布用于图片旋转 -->
-<canvas 
-  style="position:absolute;left:-9999px;width:200px;height:200px" 
-  canvas-id="imageCanvas" 
-  id="imageCanvas"
-></canvas>
+<canvas style="position:absolute;left:-9999px;width:200px;height:200px" canvas-id="imageCanvas" id="imageCanvas"></canvas>
