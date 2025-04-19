@@ -16,7 +16,7 @@ module.exports = async (event, context) => {
     date,//格式化日期字符串
     mealType,
     imageUrl,
-    timestamp,//时间戳
+    timestamp: new Date().getTime(),//生成服务器端的时间戳
     calories,
     createdAt: db.serverDate(),
     updatedAt: db.serverDate()

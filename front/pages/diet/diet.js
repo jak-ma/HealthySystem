@@ -7,35 +7,32 @@ Page({
     data: {
         envId: 'cloud1-7graxmip2ba8afa6', // 云环境ID
 
-        //饮食专区功能总体
+        //饮食专区功能入口配置
         dietFunctions: [
             { id: 'recipes', name: '营养食谱', icon: '/icons/diet/recipes.png' },
             { id: 'reminder', name: '用餐提醒', icon: '/icons/diet/reminder.png' },
             { id: 'log', name: '饮食日志', icon: '/icons/diet/log.png' }
         ],
 
-        //用餐提醒数据部分
-        mealReminders: [ // 示例初始数据
+        //用餐提醒模块提醒数据
+        mealReminders: [ //初始数据
             { _id: 'breakfast', type: '早餐', time: '07:00', enabled: true },
             { _id: 'lunch', type: '午餐', time: '12:00', enabled: true },
             { _id: 'dinner', type: '晚餐', time: '18:00', enabled: true }
         ],
-        editingReminderId: null,
-        showAddModal: false,
-        newReminder: { time: '', type: '' },
-        //滑动操作
-        startX: 0, // 触摸起始X坐标
-        currentSwipedId: null, // 当前滑动的条目ID
-
+        editingReminderId: null,//当前编辑的提醒id
+        showAddModal: false,//打开弹窗状态
 
         //饮食日志数据部分
         meals: ['早餐', '午餐', '晚餐'], // 餐次类型
+        //各部分图标
         mealIcons: [
             '/images/diet_icon/icon_breakfast.png',
             '/images/diet_icon/icon_lunch.png',
             '/images/diet_icon/icon_dinner.png'
         ],
-        hasUploaded: {}, // 饮食记录
+        hasUploaded: {
+        }, // 饮食记录，存储各餐次最新上传时间
         todaySummary: null, // 今日汇总
         loading: true, // 加载状态
         lastRefreshDate: null, // 记录上次刷新日期
@@ -408,6 +405,8 @@ Page({
             wx.hideLoading()
         }
     },
+
+
     /*********************************
      * 生命周期
      *********************************/
@@ -419,10 +418,16 @@ Page({
         // 实时更新云端数据
         this.loadReminders()
     },
+    
+    
+    /**
+     * 生命周期函数
+     */
     onShow() {
-        // 安全调用检查
+        // 安全调用检查，用户变更检查，当用户变更时重新加载数据
         if (typeof this.checkUserChanged === 'function' && this.checkUserChanged()) {
-            this.loadReminders()
+            this.loadReminders(),
+            this.loadDietLog()
         }
 
         // 更新最后登录用户
@@ -433,7 +438,10 @@ Page({
             })
         }
     },
-    // 添加用户变更检查方法
+
+    /**
+     * 检测用户信息变更
+     */
     checkUserChanged() {
         const currentUser = wx.getStorageSync('lastLoginUser')
         const { userInfo } = this.data
