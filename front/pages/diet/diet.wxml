@@ -79,12 +79,6 @@
                 </text>
             </view>
         </view>
-
-        <!-- 今日汇总 -->
-        <view class="today-summary" wx:if="{{todaySummary}}">
-            <text>今日总摄入：{{todaySummary.calories}}千卡</text>
-            <progress percent="{{todaySummary.progress}}" stroke-width="6" />
-        </view>
     </view>
 
 

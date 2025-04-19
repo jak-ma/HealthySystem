@@ -32,7 +32,6 @@ Page({
             '/images/diet_icon/icon_dinner.png'
         ],
         hasUploaded: {}, // 饮食记录，存储各餐次最新上传时间
-        todaySummary: null, // 今日汇总
         loading: true, // 加载状态
         lastRefreshDate: null, // 记录上次刷新日期
         foodInfo: null,      // 存储识别结果（食物名称、热量等）
@@ -474,13 +473,6 @@ Page({
         const minutes = d.getMinutes().toString().padStart(2, '0');
         return `${hours}:${minutes}`;
     },
-    //计算总热量
-    calculateSummary(meals) {
-        if (!meals || meals.length === 0) return null
-        const total = meals.reduce((s, m) => s + (m.calories || 0), 0)
-        return { calories: total, progress: Math.min(Math.round((total / 2000) * 100), 100) }
-    },
-
     /*********************************
      * 饮食日志：加载
      *********************************/
@@ -499,7 +491,6 @@ Page({
             })
             this.setData({
                 hasUploaded: result.logs || {},
-                todaySummary: this.calculateSummary(result.meals)
             })
         } catch (e) {
             console.error('加载饮食记录失败', e)
@@ -654,7 +645,6 @@ Page({
             foodName: recognitionRes.result.foodName,//存储食物名称
             calorie : recognitionRes.result.calorie,//存储单位热量
             imageUrl: fileID, //上传的文件存储地址
-            calories: this.estimateCalories(mealType), //通过餐次计算得出的卡路里（后续调用AI计算）
             status: 'uploaded'//固定值
         }
         //调用云函数执行数据库插入，result为云函数返回值

@@ -3,7 +3,7 @@ const db = cloud.database()
 
 module.exports = async (event, context) => {
   // 1. 参数解构
-  const { date, mealType, foodName,calorie,imageUrl, calories } = event
+  const { date, mealType, foodName,calorie,imageUrl} = event
   
   // 2. 数据校验
   if (!['早餐', '午餐', '晚餐'].includes(mealType)) {
@@ -19,7 +19,6 @@ module.exports = async (event, context) => {
     calorie,
     imageUrl,
     timestamp: new Date().getTime(),//生成服务器端的时间戳
-    calories,//此卡路里为按照餐次估算
     createdAt: db.serverDate(),
     updatedAt: db.serverDate()
   }
