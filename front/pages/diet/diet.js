@@ -595,13 +595,13 @@ Page({
                 filePath,
                 config: { env: this.data.envId }
             });
-            
+
             //调用云函数识别食物种类
             const recognitionRes = await wx.cloud.callFunction({
                 name: 'foodRecognition',              // 云函数名称
                 data: { fileID: fileID }    // 传入云端图片ID
             });
-            
+
             //处理识别结果
             wx.hideLoading()
             if (recognitionRes.result.success) {
@@ -621,7 +621,7 @@ Page({
             });
 
             //调用方法保存到数据库
-            await this.saveDietRecord(mealType, fileID ,recognitionRes);
+            await this.saveDietRecord(mealType, fileID, recognitionRes);
 
         } catch (err) {//捕获异常
             console.error('上传失败:', err);
@@ -637,13 +637,13 @@ Page({
      * @param {*} fileID //上传文件的云存储地址
      * @param {*} recognitionRes  //图片识别的结果
      */
-    async saveDietRecord(mealType, fileID,recognitionRes) {
+    async saveDietRecord(mealType, fileID, recognitionRes) {
         //用于构建数据库记录内容
         const record = {
             date: this.getTodayDate(), //自动生成当天的格式化时间字符串
             mealType, //餐次类型
             foodName: recognitionRes.result.foodName,//存储食物名称
-            calorie : recognitionRes.result.calorie,//存储单位热量
+            calorie: recognitionRes.result.calorie,//存储单位热量
             imageUrl: fileID, //上传的文件存储地址
             status: 'uploaded'//固定值
         }
@@ -656,19 +656,16 @@ Page({
                     ...record//展开全部参数作为参数
                 }
             })
-        return { ...result, calories: record.calories }//合并云函数返回值和该餐食的卡路里值作为返回值
+        return { ...result }//合并云函数返回值和该餐食的卡路里值作为返回值
     },
 
     /**
-     * 计算卡路里值（当前仅使用餐次判断，后续引入AI）
-     * @param {*} mealType 餐次类型
+     * 更新日志状态
+     * @param {*} mealType 餐次类别
      */
-    estimateCalories(mealType) { return { 早餐: 400, 午餐: 800, 晚餐: 600 }[mealType] || 500 },
-
-    updateUploadStatus(mealType, add = 0) {
+    updateUploadStatus(mealType) {
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-        const cal = (this.data.todaySummary?.calories || 0) + add
-        this.setData({ [`hasUploaded.${mealType}`]: time, todaySummary: { calories: cal, progress: Math.min(Math.round(cal / 20), 100) } })
+        this.setData({ [`hasUploaded.${mealType}`]: time })
     },
 
 
