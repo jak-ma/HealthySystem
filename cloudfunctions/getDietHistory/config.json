@@ -1,0 +1,17 @@
+{
+    "permissions": {
+      "openapi": [],
+      "database": ["diet_records"]
+    },
+    "triggers": [
+      {
+        "name": "getDietRecords",
+        "type": "timer",
+        "config": "0 0 4 * * * *" 
+      }
+    ],
+    "timeout": 5, 
+    "envVariables": {
+      "CACHE_TTL": "3600"  
+    }
+  }

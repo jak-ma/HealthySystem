@@ -7,7 +7,8 @@
     "pages/diet/diet",
     "pages/mine/mine",
     "pages/weather/weather",
-    "pages/reminder/reminder"
+    "pages/reminder/reminder",
+    "pages/diet-history/diet-history"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

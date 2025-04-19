@@ -1,0 +1,143 @@
+/* pages/diet-history/diet-history.wxss */
+/* diet-history.wxss */
+.container {
+    padding: 20rpx;
+    height: 100vh;
+    background-color: #f7f7f7;
+  }
+  
+  .date-picker {
+    background: #fff;
+    border-radius: 16rpx;
+    padding: 20rpx;
+    margin-bottom: 20rpx;
+    box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+  }
+  
+  .date-display {
+    display: flex;
+    align-items: center;
+    font-size: 32rpx;
+  }
+  
+  .calendar-icon {
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 16rpx;
+  }
+  
+  .record-list {
+    height: calc(100vh - 180rpx);
+  }
+  
+  .record-item {
+    background: #fff;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+    display: flex;
+    align-items: center;
+  }
+  
+  .food-thumbnail {
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 12rpx;
+  }
+  
+  .record-info {
+    margin-left: 24rpx;
+    flex: 1;
+  }
+  
+  .meal-type {
+    font-size: 32rpx;
+    color: #333;
+    display: block;
+    margin-bottom: 8rpx;
+  }
+  
+  .record-time {
+    font-size: 24rpx;
+    color: #999;
+  }
+  
+  .empty-tips {
+    text-align: center;
+    padding-top: 100rpx;
+  }
+  
+  .empty-icon {
+    width: 180rpx;
+    height: 180rpx;
+    opacity: 0.5;
+    margin-bottom: 20rpx;
+  }
+  
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40rpx 0;
+  }
+  
+  .loading-icon {
+    width: 60rpx;
+    height: 60rpx;
+  }
+  /* diet-history.wxss */
+/* 新增/修改的样式 */
+.record-item {
+    display: flex;
+    padding: 20rpx;
+    margin-bottom: 20rpx;
+    background: #fff;
+    border-radius: 12rpx;
+    box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.05);
+  }
+  
+  .food-thumbnail {
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: 8rpx;
+  }
+  
+  .record-info {
+    flex: 1;
+    margin-left: 20rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .info-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .meal-type {
+    font-size: 28rpx;
+    color: #ff6b81;
+    margin-right: 15rpx;
+    padding: 4rpx 12rpx;
+    background: #ffecef;
+    border-radius: 6rpx;
+  }
+  
+  .food-name {
+    font-size: 32rpx;
+    color: #333;
+    flex: 1;
+  }
+  
+  .record-time {
+    font-size: 26rpx;
+    color: #999;
+  }
+  
+  .calories {
+    font-size: 26rpx;
+    color: #ff9f43;
+    margin-left: 15rpx;
+  }
+  

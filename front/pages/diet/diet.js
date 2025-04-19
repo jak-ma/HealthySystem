@@ -38,6 +38,13 @@ Page({
         tempFileURL: ''      // 临时存储图片路径用于页面显示
 
     },
+    // 添加导航到饮食日志历史记录页面的方法
+    navigateToDietLog: function () {
+        wx.navigateTo({
+            url: '/pages/diet-history/diet-history'
+        });
+    },
+
     /*********************************
      * 用餐提醒部分
      *********************************/

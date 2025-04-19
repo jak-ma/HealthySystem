@@ -1,0 +1,53 @@
+<!-- diet-history.wxml -->
+<view class="container">
+  <!-- 顶部日期选择器 -->
+  <view class="date-picker">
+    <picker mode="date" fields="day" start="2020-01-01" end="{{currentDate}}" value="{{selectedDate}}" bindchange="onDateChange">
+      <view class="date-display">
+        <image src="/images/diet_icon/icon-calendar.png" class="calendar-icon"/>
+        <text>{{selectedDate}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y class="record-list">
+    <block wx:for="{{dietRecords}}" wx:key="_id">
+      <view class="record-item">
+        <image 
+          src="{{item.imageUrl}}" 
+          mode="aspectFill" 
+          class="food-thumbnail"
+          bindtap="previewImage" 
+          data-url="{{item.imageUrl}}"
+        />
+        <!-- 文字信息区域 -->
+        <view class="record-info">
+          <!-- 第一行：餐次 + 食物名称 -->
+          <view class="info-row">
+            <text class="meal-type">{{item.mealType}}</text>
+            <text class="food-name">{{item.foodName || '未命名食物'}}</text>
+          </view>
+          
+          <!-- 第二行：时间  -->
+          <view class="info-row">
+            <text class="record-time">{{item.time}}</text>
+          </view>
+      </view>
+      </view>
+    </block>
+
+    <!-- 空状态提示 -->
+    <view wx:if="{{dietRecords.length === 0}}" class="empty-tips">
+      <image src="/images/diet_icon/icon-empty.png" class="empty-icon"/>
+      <text>暂无饮食记录</text>
+      <button bindtap="jumpToRecord">去记录</button>
+    </view>
+  </scroll-view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <image src="/images/diet_icon/loading.png" class="loading-icon"/>
+    <text>加载中...</text>
+  </view>
+</view>
