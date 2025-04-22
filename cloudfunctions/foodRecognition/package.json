@@ -1,0 +1,15 @@
+{
+  "name": "food_recognition",
+  "version": "1.0.0",
+  "description": "百度AI菜品识别云函数",
+  "main": "index.js",
+  "dependencies": {
+    "baidu-aip-sdk": "^4.16.16",
+    "wx-server-sdk": "~2.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

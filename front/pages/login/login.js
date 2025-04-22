@@ -24,7 +24,6 @@ Page({
   // 登录按钮点击
   onLogin() {
     const { username, password } = this.data;
-
     // 输入验证
     if (!username || !password) {
       wx.showToast({
@@ -45,7 +44,6 @@ Page({
     app.login(username, password)
       .then(res => {
         wx.hideLoading();
-        
         // 登录成功
         wx.showToast({
           title: '登录成功',
