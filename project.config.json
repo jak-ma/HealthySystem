@@ -26,5 +26,6 @@
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "srcMiniprogramRoot": "front/"
+  "srcMiniprogramRoot": "front/",
+  "cloudfunctionRoot": "cloudfunctions/"
 }

@@ -1,87 +1,42 @@
-<!--pages/health/health.wxml-->
 <view class="container">
-  <view class="health-panel">
-    <!-- 数据上传模块 -->
-    <view class="panel-item {{expanded.upload ? 'expanded' : ''}}">
-      <view class="panel-header" bindtap="togglePanel" data-type="upload">
-        <text class="title">数据上传</text>
-        <image 
-          class="expand-icon" 
-          src="/icons/{{expanded.upload ? 'up' : 'down'}}.svg"
-        ></image>
-      </view>
-      <view class="panel-content">
-        <view class="upload-status">
-          <image class="status-icon" src="/icons/checked.svg"></image>
-          <text>已上传今日血压、血糖数据</text>
+    <form bindsubmit="submitForm">
+        <input name="height" placeholder="请输入身高(cm)" />
+        <input name="weight" placeholder="请输入体重(kg)" />
+        <input name="bloodPressure" placeholder="请输入血压(mmHg)" />
+        <input name="bloodLipid" placeholder="请输入血脂" />
+        <input name="bloodOxygen" placeholder="请输入血氧(%)" />
+        <!-- 添加选择照片按钮 -->
+        <button bindtap="chooseImage">选择体检报告单照片</button>
+        <!-- 显示选择的照片 -->
+        <view wx:if="{{imagePath}}" class="image-preview">
+            <image src="{{imagePath}}" mode="aspectFit" />
         </view>
-        <button class="upload-btn">重新上传</button>
-      </view>
+        <button form-type="submit">
+            <icon type="add" size="18" /> 添加
+        </button>
+    </form>
+    <view wx:if="{{advice}}" class="ai-advice">
+        <text>AI建议：{{advice}}</text>
     </view>
-
-    <!-- 体征监测模块 -->
-    <view class="panel-item {{expanded.monitor ? 'expanded' : ''}}">
-      <view class="panel-header" bindtap="togglePanel" data-type="monitor">
-        <text class="title">体征监测</text>
-        <image 
-          class="expand-icon" 
-          src="/icons/{{expanded.monitor ? 'up' : 'down'}}.svg"
-        ></image>
-      </view>
-      <view class="panel-content">
-        <view class="vital-tabs">
-          <view class="vital-tab {{currentVital === 'heartRate' ? 'active' : ''}}" bindtap="switchVital" data-type="heartRate">
-            <view class="touch-area">心率</view>
-          </view>
-          <view class="vital-tab {{currentVital === 'bloodPressure' ? 'active' : ''}}" bindtap="switchVital" data-type="bloodPressure">
-            <view class="touch-area">血压</view>
-          </view>
-          <view class="vital-tab {{currentVital === 'bloodSugar' ? 'active' : ''}}" bindtap="switchVital" data-type="bloodSugar">
-            <view class="touch-area">血糖</view>
-          </view>
-          <view class="vital-tab {{currentVital === 'oxygen' ? 'active' : ''}}" bindtap="switchVital" data-type="oxygen">
-            <view class="touch-area">血氧</view>
-          </view>
+    <button bindtap="viewHistoryData" class="view-history">
+        <icon type="search" size="18" /> 查看历史数据
+    </button>
+    <!-- 新增按钮，用于切换历史数据的显示和隐藏状态 -->
+    <button bindtap="toggleHistoryVisibility" class="toggle-history">
+        <icon type="{{isHistoryVisible ? 'cancel' : 'down'}}" size="18" /> {{isHistoryVisible ? '隐藏历史数据' : '展开历史数据'}}
+    </button>
+    <view wx:if="{{isHistoryVisible && historyData.length > 0}}" class="history-data wide">
+        <view wx:for="{{historyData}}" wx:key="*this" class="history-data-item">
+            <view class="history-data-label">身高：</view>
+            <view class="history-data-value">{{item.height}}cm <text wx:if="{{item.heightStatus}}">({{item.heightStatus}})</text></view>
+            <view class="history-data-label">体重：</view>
+            <view class="history-data-value">{{item.weight}}kg <text wx:if="{{item.weightStatus}}">({{item.weightStatus}})</text></view>
+            <view class="history-data-label">血压：</view>
+            <view class="history-data-value">{{item.bloodPressure}}mmHg <text wx:if="{{item.bloodPressureStatus}}">({{item.bloodPressureStatus}})</text></view>
+            <view class="history-data-label">血脂：</view>
+            <view class="history-data-value">{{item.bloodLipid}} <text wx:if="{{item.bloodLipidStatus}}">({{item.bloodLipidStatus}})</text></view>
+            <view class="history-data-label">血氧：</view>
+            <view class="history-data-value">{{item.bloodOxygen}}% <text wx:if="{{item.bloodOxygenStatus}}">({{item.bloodOxygenStatus}})</text></view>
         </view>
-        
-        <view class="vital-signs">
-          <!-- 图表容器 -->
-          <canvas canvas-id="vitalChart" class="vital-chart" style="width: 100%; height: 100%;"></canvas>
-          
-          <!-- 中心数据显示 -->
-          <view class="vital-data">
-            <view class="vital-value">{{vitalData.value}}</view>
-            <view class="vital-label">{{vitalData.unit}}</view>
-            <view class="vital-status {{vitalData.statusClass}}">{{vitalData.statusText}}</view>
-          </view>
-        </view>
-      </view>
     </view>
-    
-    <!-- 历史记录模块 -->
-    <view class="panel-item {{expanded.history ? 'expanded' : ''}}">
-      <view class="panel-header" bindtap="togglePanel" data-type="history">
-        <text class="title">历史记录</text>
-        <image 
-          class="expand-icon" 
-          src="/icons/{{expanded.history ? 'up' : 'down'}}.svg"
-        ></image>
-      </view>
-      <view class="panel-content">
-        <view wx:if="{{vitalHistory.length > 0}}">
-          <!-- 历史数据列表 -->
-          <block wx:for="{{vitalHistory}}" wx:key="time">
-            <view class="history-item">
-              <view class="history-time">{{item.time}}</view>
-              <view class="history-value">{{item.value}} {{vitalData.unit}}</view>
-              <view class="vital-status {{item.statusClass}}" style="float: right;">{{item.statusText}}</view>
-            </view>
-          </block>
-        </view>
-        <view wx:else class="no-data">
-          暂无历史记录
-        </view>
-      </view>
-    </view>
-  </view>
 </view>
