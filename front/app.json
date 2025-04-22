@@ -18,12 +18,15 @@
   "permission": {
     "scope.userLocation": {
       "desc": "您的位置信息将用于获取当地天气信息"
+<<<<<<< HEAD
     },
     "scope.camera": {
       "desc": "需要访问您的相机来拍摄饮食照片"
     },
     "scope.writePhotosAlbum": {
       "desc": "需要保存照片到相册以便记录饮食"
+=======
+>>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141
     }
   },
   "requiredPrivateInfos": [

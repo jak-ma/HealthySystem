@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // diet.js - 饮食专区页面逻辑
 
 Page({
@@ -702,3 +703,21 @@ Page({
     showHelp() { this.setData({ showHelpModal: true }) },
     hideHelp() { this.setData({ showHelpModal: false }) }
 })
+=======
+// diet页面逻辑
+Page({
+  data: {
+    foodList: []
+  },
+
+  onLoad() {
+    // 初始化饮食数据
+  },
+
+  addFood() {
+    wx.navigateTo({
+      url: '/pages/diet/add/add'
+    })
+  }
+})
+>>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141

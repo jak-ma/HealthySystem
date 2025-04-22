@@ -1,7 +1,11 @@
 {
   "miniprogramRoot": "front/",
+<<<<<<< HEAD
   "cloudfunctionRoot": "cloudfunctions/",
   "appid": "wxb85cb81eb404d807",
+=======
+  "appid": "wx840b5123be1de053",
+>>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141
   "compileType": "miniprogram",
   "libVersion": "3.7.12",
   "packOptions": {
