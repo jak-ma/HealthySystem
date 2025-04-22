@@ -20,8 +20,7 @@ Page({
         });
         // 加载当日数据
         this.loadDietRecords(today);
-        const pages = getCurrentPages();
-  console.log('当前页面栈:', pages.length);
+        
     },
 
     // 日期选择变化
