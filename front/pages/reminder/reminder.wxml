@@ -1,33 +1,40 @@
-<!--pages/remind/remind.wxml-->
 <view class="container">
-  <text class="title">请手动添加需要提醒使用的药品的名称，服用时间，注意事项</text>
-  <input class="input" placeholder="请输入药品名称" value="{{inputValue}}" bindinput="onInput" />
-  <picker mode="time" value="{{inputTime}}" start="00:00" end="23:59" bindchange="onTimeInput" class="picker">
-    <view class="picker-text">当前选择的服药时间: {{inputTime}}</view>
-  </picker>
-  <input class="input" placeholder="请输入注意事项" value="{{inputNotes}}" bindinput="onNotesInput" />
-  <button bindtap="addMedecineremind" type="primary" class="add-button">添加</button>
-  <view class="todo-container">
-    <view wx:for="{{medecines}}" wx:key="id" class="todo-item {{item.completed? 'completed' : ''}}">
-      <checkbox checked="{{item.completed}}" bindchange="complete" data-todoId="{{item._id}}" class="checkbox" />
-      <text>{{item.name}}</text>
-      <text>服药时间: {{item.time}}</text>
-      <button bindtap="editTime" data-id="{{item._id}}" class="edit-button">修改时间</button>
-      <text>注意事项: {{item.notes}}</text>
-      <button bindtap="editNotes" data-id="{{item._id}}" class="edit-button">修改注意事项</button>
-      <text wx:if="{{!item.completed}}">距离提醒还有: {{calculateRemainTime(item.remindTimeInMinutes)}}分钟</text>
-      <button bindtap="deleteMedecineremind" data-todoId="{{item._id}}" type="warn" class="delete-button">删除</button>
+    <!-- 使用 <image/> 标签显示背景图 -->
+    <image src="../../images/love.png" mode="aspectFill" class="background-image"></image>
+    <view class="input-section">
+        <!-- 药品名称输入框图标 -->
+        <image src="../../icons/medicine.png" class="input-icon" /> 
+        <input placeholder="药品名称" bindinput="inputMedicineName" />
+        <!-- 用药时间输入框图标 -->
+        <image src="../../icons/time.png" class="input-icon" /> 
+        <input placeholder="用药时间(如:08:00,12:00)" bindinput="inputMedicineTimes" />
+        <!-- 注意事项输入框图标 -->
+        <image src="../../icons/remind.png" class="input-icon" /> 
+        <input placeholder="注意事项" bindinput="inputMedicineNote" />
+        <button bindtap="addMedicine" type="primary">
+            <!-- 添加按钮图标 -->
+            <image src="../../icons/add_med.png" class="button-icon" /> 
+            添加
+        </button>
     </view>
-  </view>
-  <!-- 自定义输入模态框 -->
-  <view class="modal-mask" wx:if="{{showInputModal}}" bindtap="hideInputModal">
-    <view class="modal-container">
-      <view class="modal-title">{{inputModalTitle}}</view>
-      <input class="modal-input" placeholder="{{inputModalPlaceholder}}" bindinput="onInputModalInput" catchtap="preventBubble" />
-      <view class="modal-buttons">
-        <button bindtap="hideInputModal">取消</button>
-        <button bindtap="confirmInputModal">确定</button>
-      </view>
+    <view class="list-section">
+        <block wx:for="{{medicineList}}" wx:key="_id">
+            <view class="medicine-item">
+                <!-- 列表项药品图标 -->
+                <image src="../../icons/medicine.png" class="list-icon" /> 
+                <text>药品: {{item.name}}</text>
+                <!-- 列表项时间图标 -->
+                <image src="../../icons/time.png" class="list-icon" /> 
+                <text>时间: {{item.times}}</text>
+                <!-- 列表项注意事项图标 -->
+                <image src="../../icons/remind.png" class="list-icon" /> 
+                <text>注意: {{item.note}}</text>
+                <button bindtap="deleteMedicine" data-id="{{item._id}}" type="warn">
+                    <!-- 删除按钮图标 -->
+                    <image src="../../icons/delete.png" class="button-icon" /> 
+                    删除
+                </button>
+            </view>
+        </block>
     </view>
-  </view>
 </view>

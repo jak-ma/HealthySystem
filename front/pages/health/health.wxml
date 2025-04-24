@@ -1,42 +1,97 @@
 <view class="container">
+    <!-- 添加背景贴图，需把此处路径替换为实际背景图路径 -->
+    <image src="/images/doro.png" mode="aspectFit" class="background-image" />
     <form bindsubmit="submitForm">
-        <input name="height" placeholder="请输入身高(cm)" />
-        <input name="weight" placeholder="请输入体重(kg)" />
-        <input name="bloodPressure" placeholder="请输入血压(mmHg)" />
-        <input name="bloodLipid" placeholder="请输入血脂" />
-        <input name="bloodOxygen" placeholder="请输入血氧(%)" />
+        <!-- 身高输入框 -->
+        <view class="input-group">
+            <!-- 替换为实际的身高图标路径 -->
+            <image src="../../icons/height.png" class="input-icon" />
+            <input name="height" placeholder="请输入身高(cm)" class="input-field" />
+        </view>
+        <!-- 体重输入框 -->
+        <view class="input-group">
+            <!-- 替换为实际的体重图标路径 -->
+            <image src="../../icons/weight.png" class="input-icon" />
+            <input name="weight" placeholder="请输入体重(kg)" class="input-field" />
+        </view>
+        <!-- 血压输入框 -->
+        <view class="input-group">
+            <!-- 替换为实际的血压图标路径 -->
+            <image src="../../icons/blood-pressure.png" class="input-icon" />
+            <input name="bloodPressure" placeholder="请输入血压(mmHg)" class="input-field" />
+        </view>
+        <!-- 血脂输入框 -->
+        <view class="input-group">
+            <!-- 替换为实际的血脂图标路径 -->
+            <image src="../../icons/blood-lipid.png" class="input-icon" />
+            <input name="bloodLipid" placeholder="请输入血脂" class="input-field" />
+        </view>
+        <!-- 血氧输入框 -->
+        <view class="input-group">
+            <!-- 替换为实际的血氧图标路径 -->
+            <image src="../../icons/blood-oxygen.png" class="input-icon" />
+            <input name="bloodOxygen" placeholder="请输入血氧(%)" class="input-field" />
+        </view>
         <!-- 添加选择照片按钮 -->
-        <button bindtap="chooseImage">选择体检报告单照片</button>
+        <button bindtap="chooseImage" class="custom-button choose-button">
+            <!-- 替换为实际的照片图标路径 -->
+            <image src="../../icons/photo.png" class="button-icon" /> 选择体检报告单照片
+        </button>
         <!-- 显示选择的照片 -->
         <view wx:if="{{imagePath}}" class="image-preview">
             <image src="{{imagePath}}" mode="aspectFit" />
         </view>
-        <button form-type="submit">
-            <icon type="add" size="18" /> 添加
+        <button form-type="submit" class="custom-button add-button">
+            <!-- 替换为实际的添加图标路径 -->
+            <image src="../../icons/add.png" class="button-icon" /> 添加
         </button>
     </form>
     <view wx:if="{{advice}}" class="ai-advice">
-        <text>AI建议：{{advice}}</text>
+        <text>AI 建议：{{advice}}</text>
     </view>
-    <button bindtap="viewHistoryData" class="view-history">
-        <icon type="search" size="18" /> 查看历史数据
-    </button>
-    <!-- 新增按钮，用于切换历史数据的显示和隐藏状态 -->
-    <button bindtap="toggleHistoryVisibility" class="toggle-history">
-        <icon type="{{isHistoryVisible ? 'cancel' : 'down'}}" size="18" /> {{isHistoryVisible ? '隐藏历史数据' : '展开历史数据'}}
-    </button>
+    <view class="button-row">
+        <button bindtap="viewHistoryData" class="custom-button view-button">
+            <!-- 替换为实际的查看历史数据图标路径 -->
+            <image src="../../icons/history.png" class="button-icon" /> 查看
+        </button>
+        <button bindtap="toggleHistoryVisibility" class="custom-button toggle-button">
+            <!-- 替换为实际的展开和关闭图标路径 -->
+            <image src="{{isHistoryVisible ? '../../icons/close.png' : '../../icons/down.png'}}" class="button-icon" /> 
+            {{isHistoryVisible ? '隐藏' : '展开'}}
+        </button>
+    </view>
     <view wx:if="{{isHistoryVisible && historyData.length > 0}}" class="history-data wide">
-        <view wx:for="{{historyData}}" wx:key="*this" class="history-data-item">
-            <view class="history-data-label">身高：</view>
+        <view wx:for="{{historyData}}" wx:key="_id" class="history-data-item">
+            <view class="history-data-label">
+                <!-- 替换为实际的身高图标路径 -->
+                <image src="../../icons/height.png" class="label-icon" /> 身高：
+            </view>
             <view class="history-data-value">{{item.height}}cm <text wx:if="{{item.heightStatus}}">({{item.heightStatus}})</text></view>
-            <view class="history-data-label">体重：</view>
+            <view class="history-data-label">
+                <!-- 替换为实际的体重图标路径 -->
+                <image src="../../icons/weight.png" class="label-icon" /> 体重：
+            </view>
             <view class="history-data-value">{{item.weight}}kg <text wx:if="{{item.weightStatus}}">({{item.weightStatus}})</text></view>
-            <view class="history-data-label">血压：</view>
+            <view class="history-data-label">
+                <!-- 替换为实际的血压图标路径 -->
+                <image src="../../icons/blood-pressure.png" class="label-icon" /> 血压：
+            </view>
             <view class="history-data-value">{{item.bloodPressure}}mmHg <text wx:if="{{item.bloodPressureStatus}}">({{item.bloodPressureStatus}})</text></view>
-            <view class="history-data-label">血脂：</view>
+            <view class="history-data-label">
+                <!-- 替换为实际的血脂图标路径 -->
+                <image src="../../icons/blood-lipid.png" class="label-icon" /> 血脂：
+            </view>
             <view class="history-data-value">{{item.bloodLipid}} <text wx:if="{{item.bloodLipidStatus}}">({{item.bloodLipidStatus}})</text></view>
-            <view class="history-data-label">血氧：</view>
+            <view class="history-data-label">
+                <!-- 替换为实际的血氧图标路径 -->
+                <image src="../../icons/blood-oxygen.png" class="label-icon" /> 血氧：
+            </view>
             <view class="history-data-value">{{item.bloodOxygen}}% <text wx:if="{{item.bloodOxygenStatus}}">({{item.bloodOxygenStatus}})</text></view>
+            <!-- 添加删除按钮 -->
+            <button bindtap="deleteRecord" data-id="{{item._id}}" class="custom-button delete-button">
+                <!-- 替换为实际的删除图标路径 -->
+                <image src="../../icons/delete.png" class="button-icon" /> 删除
+            </button>
         </view>
     </view>
 </view>

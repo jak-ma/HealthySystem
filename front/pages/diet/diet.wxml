@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!-- 饮食专区主界面 -->
 <view class="diet-page">
     <!-- 顶部标题栏 -->
@@ -96,7 +95,3 @@
 
 <!-- 隐藏的画布用于图片旋转 -->
 <canvas style="position:absolute;left:-9999px;width:200px;height:200px" canvas-id="imageCanvas" id="imageCanvas"></canvas>
-=======
-<!--pages/diet/diet.wxml-->
-<text>pages/diet/diet.wxml</text>
->>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141

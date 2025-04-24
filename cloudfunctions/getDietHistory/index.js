@@ -1,7 +1,7 @@
 // cloudfunctions/getDietRecords/index.js
 const { opendir } = require('fs');
 const cloud = require('wx-server-sdk')
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
+cloud.init({ env: "cloud1-7gomrs3ufe613311" })
 
 exports.main = async (event, context) => {
   const { date} = event;//解构前端传入的参数

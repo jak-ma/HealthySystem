@@ -1,7 +1,7 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 const AipImageClassifyClient = require("baidu-aip-sdk").imageClassify
-cloud.init()
+cloud.init({ env: "cloud1-7gomrs3ufe613311" }) // 统一云环境配置
 
 // 百度AI配置（从百度ai获取）
 const APP_ID = "118570866"

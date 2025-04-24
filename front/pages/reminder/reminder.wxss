@@ -1,103 +1,68 @@
-/* pages/remind/remind.wxss */
 .container {
   padding: 20px;
+  position: relative;
+  
+  
+width: 100%;
+height: 100%;
 }
 
-.title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.background-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 
-.input {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.picker {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.picker-text {
-  font-size: 16px;
-}
-
-.add-button {
+.input-section {
   margin-bottom: 20px;
 }
 
-.todo-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.todo-item {
-  border: 1px solid #ccc;
-  padding: 10px;
+.input-section input {
+  width: calc(100% - 30px);
   margin-bottom: 10px;
-  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  border: solid;
 }
 
-.checkbox {
+.input-icon {
+  width: 20px;
+  height: 20px;
   margin-right: 10px;
+  vertical-align: middle;
 }
 
-.edit-button {
-  margin-left: 10px;
+.list-section {
+  margin-top: 20px;
 }
 
-.delete-button {
-  margin-left: 10px;
-}
-
-.completed {
-  text-decoration: line-through;
-  color: #999;
-}
-
-/* 自定义输入模态框样式 */
-.modal-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 80%;
-}
-
-.modal-title {
-  font-size: 18px;
-  font-weight: bold;
+.medicine-item {
+  padding: 15px;
   margin-bottom: 10px;
+  border: solid;
+  border-radius: 4px;
 }
 
-.modal-input {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+.medicine-item text {
+  display: block;
+  margin-bottom: 5px;
 }
 
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
+.list-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
-.modal-buttons button {
-  margin-left: 10px;
+.button-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  vertical-align: middle;
 }

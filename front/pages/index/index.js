@@ -8,6 +8,8 @@ Page({
       { img: '/images/banner3.jpg', link: '/pages/news/detail?id=3' },
       { type: 'weather' }
     ],
+    // 健康资讯数据
+    healthNews: [],
     // 天气相关数据
     cityName: '北京', // 默认城市
     detailedLocation: '', // 详细位置信息（街道/小区）
@@ -40,6 +42,8 @@ Page({
     this.checkLoginStatus();
     // 先检查位置授权，而不是直接获取位置
     this.checkLocationAuth();
+    // 获取健康资讯数据
+    this.getHealthNews();
     
     setTimeout(() => {
       this.setData({ loading: false });
@@ -283,6 +287,56 @@ Page({
       if (!app.globalData.hasLogin) {
         wx.redirectTo({ url: '/pages/login/login' });
       }
+    }
+  },
+  
+  // 获取健康资讯数据
+  getHealthNews: function() {
+    const that = this;
+    wx.cloud.callFunction({
+      name: 'getHealthNews',
+      success: function(res) {
+        console.log('获取健康资讯成功:', res);
+        if (res.result && res.result.code === 0) {
+          that.setData({
+            healthNews: res.result.data
+          });
+        } else {
+          console.error('获取健康资讯失败:', res);
+          wx.showToast({
+            title: '获取健康资讯失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: function(err) {
+        console.error('调用云函数失败:', err);
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'none'
+        });
+      }
+    });
+  },
+  
+  // 处理健康资讯点击事件
+  handleNewsItemTap: function(e) {
+    const id = e.currentTarget.dataset.id;
+    const newsItem = this.data.healthNews.find(item => item.id === id);
+    
+    if (newsItem) {
+      // 这里可以跳转到详情页，或者显示一个模态框
+      wx.showModal({
+        title: newsItem.title,
+        content: newsItem.content,
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      
+      // 如果有详情页，可以使用以下代码跳转
+      // wx.navigateTo({
+      //   url: `/pages/news/detail?id=${id}`
+      // });
     }
   },
 

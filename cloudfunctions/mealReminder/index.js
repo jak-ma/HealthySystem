@@ -1,6 +1,6 @@
 // cloud/functions/mealReminder/index.js
 const cloud = require('wx-server-sdk')
-cloud.init({ env: process.env.envId })
+cloud.init({ env: "cloud1-7gomrs3ufe613311" })
 
 exports.main = async (event, context) => {
     const { action } = event

@@ -1,15 +1,8 @@
 {
   "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
-<<<<<<< HEAD
-  "projectname": "HealthySystem-master",
+  "projectname": "HealthySystem",
   "setting": {
     "compileHotReLoad": true
   },
   "libVersion": "3.7.12"
-=======
-  "projectname": "wx_v2.0",
-  "setting": {
-    "compileHotReLoad": true
-  }
->>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141
 }

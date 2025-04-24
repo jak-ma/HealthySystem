@@ -5,7 +5,7 @@ Page({
      * 页面数据
      *********************************/
     data: {
-        envId: 'cloud1-7graxmip2ba8afa6', // 云环境ID
+        envId: 'cloud1-7gomrs3ufe613311', // 云环境ID
 
         //饮食专区功能入口配置
         dietFunctions: [
@@ -702,72 +702,3 @@ Page({
     showHelp() { this.setData({ showHelpModal: true }) },
     hideHelp() { this.setData({ showHelpModal: false }) }
 })
-=======
-// diet页面逻辑
->>>>>>> a9b23c6bc2d059c0ea22933f6cf60789685c81f7
-Page({
-
-  /**
-   * 页面的初始数据
-   */
-  data: {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  }
-})
->>>>>>> c21b32876ffd4509599492e99cbc42f85ff44141

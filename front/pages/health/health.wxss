@@ -1,34 +1,90 @@
 .container {
   padding: 20rpx;
+  position: relative; /* 为背景贴图定位 */
+  overflow: hidden; /* 防止背景贴图溢出 */
+  min-height: 100vh; /* 确保容器至少占满整个视口高度 */
 }
 
-form input {
+.background-image {
+  position: fixed; /* 固定背景图，使其不随内容滚动 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.3; /* 调整透明度 */
+  object-fit: cover; /* 让图片覆盖整个容器 */
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
   border: 1px solid #ccc;
   border-radius: 5rpx;
-  padding: 10rpx;
+  padding: 15rpx; /* 增加输入框内边距，使其变大 */
   margin-bottom: 15rpx;
-  width: 100%;
 }
 
-button {
-  background-color: #1aad19; /* 绿色按钮背景色，可按需修改 */
+.input-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 10rpx;
+}
+
+.input-field {
+  border: none;
+  width: 100%;
+  font-size: 30rpx; /* 增加输入框文字大小 */
+}
+
+.custom-button {
   color: white;
   border: none;
   border-radius: 5rpx;
-  padding: 12rpx 20rpx;
+  padding: 8rpx 15rpx; /* 减小按钮内边距，使按钮变小 */
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+  opacity: 0.9; /* 降低按钮不透明度，减少对图标的遮挡 */
 }
 
-button icon {
+.button-icon {
+  width: 20rpx;
+  height: 20rpx;
   margin-right: 5rpx; /* 图标与按钮文字间的间距 */
 }
 
-.view-history {
+.button-row {
+  display: flex;
+  justify-content: space-between;
   margin-top: 20rpx;
 }
 
-.toggle-history {
-  margin-top: 10rpx;
+.view-button,
+.toggle-button {
+  width: 48%; /* 让两个按钮宽度占比 */
+}
+
+.choose-button {
+  background-color: #a5d6a7; /* 淡绿色，选择照片按钮 */
+}
+
+.add-button {
+  background-color: #81d4fa; /* 淡蓝色，添加按钮 */
+}
+
+.view-button {
+  background-color: #ffab91; /* 淡橙色，查看按钮 */
+}
+
+.toggle-button {
+  background-color: #b39ddb; /* 淡紫色，展开/隐藏按钮 */
+}
+
+.delete-button {
+  background-color: #ef9a9a; /* 淡红色，删除按钮 */
 }
 
 .history-data-item {
@@ -36,7 +92,7 @@ button icon {
   border-radius: 5rpx;
   padding: 10rpx;
   margin-bottom: 10rpx;
-  background-color: #f9f9f9; /* 添加背景色 */
+  background-color: rgba(255, 255, 255, 0.8); /* 增加历史数据项背景透明度，防止被背景图遮挡 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
   transition: all 0.3s ease; /* 添加过渡效果 */
 }
@@ -49,13 +105,30 @@ button icon {
 .history-data-label {
   font-weight: bold;
   color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.label-icon {
+  width: 18rpx;
+  height: 18rpx;
+  margin-right: 5rpx;
 }
 
 .history-data-value {
   color: #666;
+  margin-left: 24rpx; /* 与图标对齐 */
 }
 
 .wide {
   width: 90%; /* 设置历史数据展示区域的宽度 */
   margin: 0 auto; /* 居中显示 */
-}    
+}
+
+.ai-advice {
+  background-color: rgba(229, 246, 255, 0.8); /* 增加AI建议区域背景透明度 */
+  border: 1px solid #b3d4ff;
+  border-radius: 5rpx;
+  padding: 10rpx;
+  margin-top: 20rpx;
+}

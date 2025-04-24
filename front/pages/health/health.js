@@ -3,7 +3,6 @@ Page({
       advice: '',
       historyData: [],
       isHistoryVisible: false,
-      // 定义各健康指标的合理范围
       healthRanges: {
           height: { min: 50, max: 250 },
           weight: { min: 10, max: 300 },
@@ -13,12 +12,12 @@ Page({
       },
       imagePath: ''
   },
-  chooseImage: function () {
+  chooseImage() {
       wx.chooseImage({
           count: 1,
           sizeType: ['original', 'compressed'],
           sourceType: ['album', 'camera'],
-          success: res => {
+          success: (res) => {
               this.setData({
                   imagePath: res.tempFilePaths[0]
               });
@@ -31,57 +30,51 @@ Page({
           wx.cloud.uploadFile({
               cloudPath: 'medical_reports/' + new Date().getTime() + '.jpg',
               filePath: this.data.imagePath,
-              success: res => {
-                  console.log('照片上传成功', res.fileID);
-                  // 将 fileID 添加到表单数据中
+              success: (res) => {
                   formData.reportImageFileID = res.fileID;
-                  // 保存数据到云开发数据库
                   wx.cloud.database().collection('healthRecords').add({
                       data: formData,
-                      success: res => {
-                          // 调用云函数获取AI建议
+                      success: (res) => {
                           wx.cloud.callFunction({
                               name: 'getAIAdvice',
                               data: formData,
-                              success: res => {
+                              success: (res) => {
                                   this.setData({
                                       advice: res.result.advice
                                   });
                               },
-                              fail: err => {
+                              fail: (err) => {
                                   console.error('调用云函数失败', err);
                               }
                           });
                       },
-                      fail: err => {
+                      fail: (err) => {
                           console.error('保存数据到数据库失败', err);
                       }
                   });
               },
-              fail: err => {
+              fail: (err) => {
                   console.error('照片上传失败', err);
               }
           });
       } else {
-          // 没有选择照片，直接保存表单数据到数据库
           wx.cloud.database().collection('healthRecords').add({
               data: formData,
-              success: res => {
-                  // 调用云函数获取AI建议
+              success: (res) => {
                   wx.cloud.callFunction({
                       name: 'getAIAdvice',
                       data: formData,
-                      success: res => {
+                      success: (res) => {
                           this.setData({
                               advice: res.result.advice
                           });
                       },
-                      fail: err => {
+                      fail: (err) => {
                           console.error('调用云函数失败', err);
                       }
                   });
               },
-              fail: err => {
+              fail: (err) => {
                   console.error('保存数据到数据库失败', err);
               }
           });
@@ -89,11 +82,11 @@ Page({
   },
   viewHistoryData() {
       wx.cloud.database().collection('healthRecords')
-         .orderBy('createTime', 'desc') // 按创建时间降序排列
-         .limit(9) // 取最近的9条数据
+         .orderBy('createTime', 'desc')
+         .limit(9)
          .get({
-              success: res => {
-                  const markedData = res.data.map(item => {
+              success: (res) => {
+                  const markedData = res.data.map((item) => {
                       const newItem = { ...item };
                       for (const key in this.data.healthRanges) {
                           if (item[key]) {
@@ -113,15 +106,32 @@ Page({
                       isHistoryVisible: true
                   });
               },
-              fail: err => {
+              fail: (err) => {
                   console.error('读取历史数据失败', err);
               }
           });
   },
-  // 新增方法，用于切换历史数据的显示和隐藏状态
   toggleHistoryVisibility() {
       this.setData({
           isHistoryVisible: !this.data.isHistoryVisible
       });
+  },
+  deleteRecord(e) {
+    console.log(e);
+    const recordId = e.currentTarget.dataset.id;
+    wx.cloud.database().collection('healthRecords').doc(recordId).remove({
+      success: (res) => {
+        console.log('数据库删除成功', res);
+        // 使用数组的filter方法创建新数组，确保视图更新
+        const newHistoryData = this.data.historyData.filter(item => item._id !== recordId);
+        this.setData({ historyData: newHistoryData }, () => {
+          wx.showToast({ title: '删除成功', icon: 'success' });
+        });
+      },
+      fail: (err) => {
+        console.error('数据库删除失败', err);
+        wx.showToast({ title: '删除失败，请重试', icon: 'none' });
+      }
+    });
   }
 });

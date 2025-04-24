@@ -1,5 +1,5 @@
 const cloud = require('wx-server-sdk')
-cloud.init({ env: process.env.ENV_ID || cloud.DYNAMIC_CURRENT_ENV })//初始化云开发环境，支持自动匹配和指定
+cloud.init({ env: "cloud1-7gomrs3ufe613311"})//初始化云开发环境，支持自动匹配和指定
 const db = cloud.database()//引用数据库
 
 // 初始化集合索引（冷启动时执行）

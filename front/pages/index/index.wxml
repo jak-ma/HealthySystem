@@ -62,5 +62,30 @@
         </block>
       </view>
     </view>
+    
+    <!-- 健康资讯 -->
+    <view class="health-news">
+      <view class="section-title">健康资讯</view>
+      <view class="news-container">
+        <block wx:if="{{!healthNews.length}}">
+          <view class="news-loading">加载中...</view>
+        </block>
+        <block wx:else>
+          <view 
+            wx:for="{{healthNews}}" 
+            wx:key="id" 
+            class="news-item"
+            bindtap="handleNewsItemTap"
+            data-id="{{item.id}}"
+          >
+            <image src="{{item.image}}" class="news-image" mode="aspectFill"/>
+            <view class="news-content">
+              <text class="news-title">{{item.title}}</text>
+              <text class="news-date">{{item.date}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
   </block>
 </view>
