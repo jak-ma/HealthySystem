@@ -1,322 +1,505 @@
+// 用药提醒页面
+
 Page({
   data: {
-      medecines: [],
-      inputValue: '',
-      inputTime: '00:00',
-      inputNotes: '',
-      showInputModal: false,
-      inputModalTitle: '',
-      inputModalPlaceholder: '',
-      inputModalValue: '',
-      currentEditId: null,
-      currentEditType: null
-  },
+    // 界面控制
+    showManualForm: false,
+    showOcrCapture: false,
+    showSuccessModal: false,
+    
+    // 药品信息
+    medicineName: '',
+    medicineDosage: '',
+    medicineTime: '08:00', // 默认早上8点
+    medicineUsage: '口服',
+    frequency: 1,
+    enableEarlyRemind: true,
+    
+    // OCR相关
+    tempImagePath: '',
+    ocrResult: null,
+    ocrError: false,
+    
+    // 药品列表
+    medicineList: [],
+    
+  // 注意修改此处配置
+  //  // 腾讯云OCR配置
+  //   secretId: '',
+  //   secretKey: ''
+  // },
 
-  onInput: function (e) {
+  onLoad: function() {
+    this.fetchMedicineList();
+  },
+  
+  // 界面控制函数
+  showManualForm: function() {
+    this.setData({
+      showManualForm: true,
+      showOcrCapture: false
+    });
+  },
+  
+  hideManualForm: function() {
+    this.setData({
+      showManualForm: false,
+      medicineName: '',
+      medicineDosage: '',
+      medicineTime: '08:00',
+      medicineUsage: '口服',
+      frequency: 1
+    });
+  },
+  
+  showOcrCapture: function() {
+    this.setData({
+      showOcrCapture: true,
+      showManualForm: false,
+      tempImagePath: '',
+      ocrResult: null,
+      ocrError: false
+    });
+  },
+  
+  hideSuccessModal: function() {
+    this.setData({
+      showSuccessModal: false
+    });
+  },
+  
+  // 表单输入处理函数
+  onMedicineNameInput: function(e) {
+    this.setData({
+      medicineName: e.detail.value
+    });
+  },
+  
+  onMedicineDosageInput: function(e) {
+    this.setData({
+      medicineDosage: e.detail.value
+    });
+  },
+  
+  onMedicineUsageInput: function(e) {
+    this.setData({
+      medicineUsage: e.detail.value
+    });
+  },
+  
+  onTimeChange: function(e) {
+    this.setData({
+      medicineTime: e.detail.value
+    });
+  },
+  
+  // 快捷选择函数
+  selectQuickMedicine: function(e) {
+    this.setData({
+      medicineName: e.currentTarget.dataset.name
+    });
+  },
+  
+  selectQuickTime: function(e) {
+    this.setData({
+      medicineTime: e.currentTarget.dataset.time
+    });
+  },
+  
+  // 频次控制
+  increaseFrequency: function() {
+    let frequency = this.data.frequency;
+    if (frequency < 5) {
       this.setData({
-          inputValue: e.detail.value
+        frequency: frequency + 1
       });
+    } else {
+      wx.showToast({
+        title: '最多每日5次',
+        icon: 'none'
+      });
+    }
   },
-
-  onTimeInput: function (e) {
+  
+  decreaseFrequency: function() {
+    let frequency = this.data.frequency;
+    if (frequency > 1) {
       this.setData({
-          inputTime: e.detail.value
+        frequency: frequency - 1
       });
-  },
-
-  onNotesInput: function (e) {
-      this.setData({
-          inputNotes: e.detail.value
+    } else {
+      wx.showToast({
+        title: '至少每日1次',
+        icon: 'none'
       });
+    }
   },
-
-  addMedecineremind: function () {
-      const { inputValue, inputTime, inputNotes } = this.data;
-      if (inputValue.trim()!== '') {
-          const timeParts = inputTime.split(':');
-          const remindTimeInMinutes = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
-          const newData = {
-              name: inputValue,
-              time: inputTime,
-              notes: inputNotes,
-              completed: false,
-              remindTimeInMinutes: remindTimeInMinutes
-          };
-          wx.cloud.database().collection('medecineremind').add({
-              data: newData,
-              success: res => {
-                  this.fetchMedecines();
-                  this.setData({
-                      inputValue: '',
-                      inputTime: '00:00',
-                      inputNotes: ''
-                  });
-              },
-              fail: err => {
-                  console.error('添加药品提醒失败', err);
-              }
+  
+  // 提醒设置
+  toggleEarlyRemind: function(e) {
+    this.setData({
+      enableEarlyRemind: e.detail.value
+    });
+  },
+  
+  // 语音输入
+  startVoiceInput: function(e) {
+    const field = e.currentTarget.dataset.field;
+    const that = this;
+    
+    // 调用微信语音识别接口
+    wx.startRecord({
+      success: function(res) {
+        const content = res.result || '';
+        if (field === 'medicineName') {
+          that.setData({
+            medicineName: content
           });
+        }
+      },
+      fail: function() {
+        wx.showToast({
+          title: '语音识别失败',
+          icon: 'none'
+        });
       }
+    });
+    
+    // 10秒后自动停止录音
+    setTimeout(function() {
+      wx.stopRecord();
+    }, 10000);
   },
-
-  deleteMedecineremind: function (e) {
-      const medecine_id = e.currentTarget.dataset.todoid;
-      wx.cloud.database().collection('medecineremind').doc(medecine_id).remove({
-          success: res => {
-              this.fetchMedecines();
-          },
-          fail: err => {
+  
+  // 添加药品提醒
+  addMedicineReminder: function() {
+    const { medicineName, medicineDosage, medicineTime, medicineUsage, frequency, enableEarlyRemind } = this.data;
+    
+    if (!medicineName) {
+      wx.showToast({
+        title: '请输入药品名称',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 处理多次服药的时间
+    let times = [medicineTime];
+    if (frequency > 1) {
+      // 简单处理：根据频次平均分配时间
+      const baseHour = parseInt(medicineTime.split(':')[0]);
+      const baseMinute = parseInt(medicineTime.split(':')[1]);
+      const interval = Math.floor(24 / frequency);
+      
+      times = [];
+      for (let i = 0; i < frequency; i++) {
+        let hour = (baseHour + i * interval) % 24;
+        let timeStr = `${hour.toString().padStart(2, '0')}:${baseMinute.toString().padStart(2, '0')}`;
+        times.push(timeStr);
+      }
+    }
+    
+    const timeString = times.join(',');
+    
+    // 构建药品数据
+    const medicineData = {
+      name: medicineName,
+      dosage: medicineDosage || '',
+      time: timeString,
+      usage: medicineUsage || '口服',
+      frequency: `每日${frequency}次`,
+      earlyRemind: enableEarlyRemind,
+      createTime: new Date().getTime()
+    };
+    
+    // 保存到云数据库
+    wx.cloud.database().collection('medicineReminders').add({
+      data: medicineData,
+      success: res => {
+        // 显示成功提示
+        this.setData({
+          showSuccessModal: true,
+          showManualForm: false,
+          medicineName: '',
+          medicineDosage: '',
+          medicineTime: '08:00',
+          medicineUsage: '口服',
+          frequency: 1
+        });
+        
+        // 显示文字提示并添加震动效果
+        wx.showToast({
+          title: '提醒设置成功',
+          icon: 'success'
+        });
+        wx.vibrateShort();
+        
+        // 刷新列表
+        this.fetchMedicineList();
+      },
+      fail: err => {
+        wx.showToast({
+          title: '保存失败，请重试',
+          icon: 'none'
+        });
+        console.error('添加药品提醒失败', err);
+      }
+    });
+  },
+  
+  // 获取药品列表
+  fetchMedicineList: function() {
+    wx.cloud.database().collection('medicineReminders')
+      .orderBy('createTime', 'desc')
+      .get({
+        success: res => {
+          this.setData({
+            medicineList: res.data
+          });
+        },
+        fail: err => {
+          console.error('获取药品列表失败', err);
+        }
+      });
+  },
+  
+  // 编辑药品
+  editMedicine: function(e) {
+    const id = e.currentTarget.dataset.id;
+    const medicine = this.data.medicineList.find(item => item._id === id);
+    
+    if (medicine) {
+      // 处理时间和频次
+      const times = medicine.time.split(',');
+      const frequency = times.length;
+      
+      this.setData({
+        showManualForm: true,
+        medicineName: medicine.name,
+        medicineDosage: medicine.dosage,
+        medicineTime: times[0], // 使用第一个时间点
+        medicineUsage: medicine.usage,
+        frequency: frequency,
+        enableEarlyRemind: medicine.earlyRemind,
+        currentEditId: id
+      });
+    }
+  },
+  
+  // 删除药品
+  deleteMedicine: function(e) {
+    const id = e.currentTarget.dataset.id;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个用药提醒吗？',
+      confirmColor: '#ff4d4f',
+      success: res => {
+        if (res.confirm) {
+          wx.cloud.database().collection('medicineReminders').doc(id).remove({
+            success: () => {
+              wx.showToast({
+                title: '删除成功',
+                icon: 'success'
+              });
+              this.fetchMedicineList();
+            },
+            fail: err => {
+              wx.showToast({
+                title: '删除失败，请重试',
+                icon: 'none'
+              });
               console.error('删除药品提醒失败', err);
-          }
-      });
+            }
+          });
+        }
+      }
+    });
   },
-
-  complete: function (e) {
-      const medecine_id = e.currentTarget.dataset.todoid;
-      const isCompleted = e.detail.value;
-      wx.cloud.database().collection('medecineremind').doc(medecine_id).update({
+  
+  // OCR相关函数
+  takePhoto: function() {
+    const ctx = wx.createCameraContext();
+    ctx.takePhoto({
+      quality: 'high',
+      success: res => {
+        this.setData({
+          tempImagePath: res.tempImagePath
+        });
+      },
+      fail: () => {
+        wx.showToast({
+          title: '拍照失败，请重试',
+          icon: 'none'
+        });
+      }
+    });
+  },
+  
+  // 从相册选择图片
+  chooseImage: function() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album'],
+      success: res => {
+        this.setData({
+          tempImagePath: res.tempFilePaths[0]
+        });
+      },
+      fail: () => {
+        wx.showToast({
+          title: '选择图片失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+  
+  retakePhoto: function() {
+    this.setData({
+      tempImagePath: '',
+      ocrResult: null,
+      ocrError: false
+    });
+  },
+  
+  confirmPhoto: function() {
+    // 显示加载提示
+    wx.showLoading({
+      title: '正在识别...',
+      mask: true
+    });
+    
+    // 将图片转为base64
+    wx.getFileSystemManager().readFile({
+      filePath: this.data.tempImagePath,
+      encoding: 'base64',
+      success: res => {
+        // 调用腾讯云OCR接口
+        this.callTencentOcr(res.data);
+      },
+      fail: () => {
+        wx.hideLoading();
+        this.setData({
+          ocrError: true
+        });
+      }
+    });
+  },
+  
+  callTencentOcr: function(imageBase64) {
+    // 上传图片到云存储
+    const cloudPath = 'prescriptions/' + new Date().getTime() + '.jpg';
+    const fileContent = wx.base64ToArrayBuffer(imageBase64);
+    
+    wx.cloud.uploadFile({
+      cloudPath: cloudPath,
+      fileContent: fileContent,
+      filePath: this.data.tempImagePath, // 添加filePath参数，解决上传失败问题
+      success: res => {
+        // 调用云函数进行OCR识别
+        wx.cloud.callFunction({
+          name: 'ocrPrescription',
           data: {
-              completed: isCompleted
+            fileID: res.fileID
           },
-          success: res => {
-              this.fetchMedecines();
-          },
-          fail: err => {
-              console.error('更新药品提醒状态失败', err);
-          }
-      });
-  },
-
-  calculateRemainTime: function (remindTimeInMinutes) {
-      const currentTime = new Date();
-      const currentTimeInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-      const remainTime = remindTimeInMinutes - currentTimeInMinutes;
-      return remainTime > 0? remainTime : 0;
-  },
-
-  editTime: function (e) {
-      const medecineId = e.currentTarget.dataset.id;
-      const medecine = this.data.medecines.find(m => m._id === medecineId);
-      this.setData({
-          showInputModal: true,
-          inputModalTitle: '修改服药时间',
-          inputModalPlaceholder: medecine.time,
-          currentEditId: medecineId,
-          currentEditType: 'time'
-      });
-  },
-
-  editNotes: function (e) {
-      const medecineId = e.currentTarget.dataset.id;
-      const medecine = this.data.medecines.find(m => m._id === medecineId);
-      this.setData({
-          showInputModal: true,
-          inputModalTitle: '修改注意事项',
-          inputModalPlaceholder: medecine.notes,
-          currentEditId: medecineId,
-          currentEditType: 'notes'
-      });
-  },
-
-  onInputModalInput: function (e) {
-      this.setData({
-          inputModalValue: e.detail.value
-      });
-  },
-
-  confirmInputModal: function () {
-      const { currentEditId, currentEditType, inputModalValue } = this.data;
-      if (currentEditType === 'time') {
-          const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-          if (timeRegex.test(inputModalValue)) {
-              const timeParts = inputModalValue.split(':');
-              const newRemindTimeInMinutes = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
-              wx.cloud.database().collection('medecineremind').doc(currentEditId).update({
-                  data: {
-                      time: inputModalValue,
-                      remindTimeInMinutes: newRemindTimeInMinutes
-                  },
-                  success: res => {
-                      this.fetchMedecines();
-                      this.setData({
-                          showInputModal: false,
-                          inputModalValue: ''
-                      });
-                  },
-                  fail: err => {
-                      console.error('修改时间失败', err);
-                      this.setData({
-                          showInputModal: false,
-                          inputModalValue: ''
-                      });
-                  }
-              });
-          } else {
-              wx.showToast({
-                  title: '请输入有效的时间格式（HH:MM）',
-                  icon: 'none'
-              });
-          }
-      } else if (currentEditType === 'notes') {
-          if (inputModalValue.trim()!== '') {
-              wx.cloud.database().collection('medecineremind').doc(currentEditId).update({
-                  data: {
-                      notes: inputModalValue
-                  },
-                  success: res => {
-                      this.fetchMedecines();
-                      this.setData({
-                          showInputModal: false,
-                          inputModalValue: ''
-                      });
-                  },
-                  fail: err => {
-                      console.error('修改注意事项失败', err);
-                      this.setData({
-                          showInputModal: false,
-                          inputModalValue: ''
-                      });
-                  }
-              });
-          } else {
-              wx.showToast({
-                  title: '注意事项不能为空',
-                  icon: 'none'
-              });
-          }
-      }
-  },
-
-  hideInputModal: function () {
-      this.setData({
-          showInputModal: false,
-          inputModalValue: ''
-      });
-  },
-
-  preventBubble: function (e) {
-      if (e && e.target && typeof e.stopPropagation === 'function') {
-          e.stopPropagation();
-      }
-  },
-
-  fetchMedecines: function () {
-      wx.cloud.database().collection('medecineremind').get({
-          success: res => {
+          success: result => {
+            wx.hideLoading();
+            
+            if (result.result && result.result.success) {
+              // 处理OCR识别结果
+              const ocrData = result.result.MedicalInvoiceInfos[0];
               this.setData({
-                  medecines: res.data
+                ocrResult: ocrData
               });
-              this.setupTimers();
+              // 添加震动效果
+              wx.vibrateShort();
+            } else {
+              this.setData({
+                ocrError: true
+              });
+              console.error('OCR识别失败', result);
+            }
           },
           fail: err => {
-              console.error('获取药品提醒列表失败', err);
+            wx.hideLoading();
+            this.setData({
+              ocrError: true
+            });
+            console.error('调用OCR云函数失败', err);
           }
-      });
+        });
+      },
+      fail: err => {
+        wx.hideLoading();
+        this.setData({
+          ocrError: true
+        });
+        console.error('上传图片失败', err);
+      }
+    });
   },
-
-  setupTimers: function () {
-      const currentTime = new Date();
-      const currentTimeInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-      const { medecines } = this.data;
-      medecines.forEach(medecine => {
-          if (!medecine.completed) {
-              // 清除之前的定时器
-              if (medecine.earlyTimerId) clearTimeout(medecine.earlyTimerId);
-              if (medecine.timerId) clearTimeout(medecine.timerId);
-              if (medecine.overdueTimerId) clearTimeout(medecine.overdueTimerId);
-              
-              if (medecine.remindTimeInMinutes > currentTimeInMinutes) {
-                  // 提前一小时提醒
-                  const earlyRemindTime = medecine.remindTimeInMinutes - 60;
-                  if (earlyRemindTime > currentTimeInMinutes) {
-                      const earlyDiff = (earlyRemindTime - currentTimeInMinutes) * 60 * 1000;
-                      const earlyTimerId = setTimeout(() => {
-                          wx.vibrateShort();
-                          wx.showToast({
-                              title: `即将服用${medecine.name}`,
-                              icon: 'none',
-                              duration: 3000
-                          });
-                      }, earlyDiff);
-                      medecine.earlyTimerId = earlyTimerId;
-                  }
-                  
-                  // 准时提醒
-                  const timeDiffInSeconds = (medecine.remindTimeInMinutes - currentTimeInMinutes) * 60 * 1000;
-                  const timerId = setTimeout(() => {
-                      wx.vibrateShort({
-                          type: 'heavy'
-                      });
-                      wx.showModal({
-                          title: '用药提醒',
-                          content: `该服用${medecine.name}了，注意事项：${medecine.notes}`,
-                          showCancel: false,
-                          confirmText: '已服用',
-                          success: (res) => {
-                              if (res.confirm) {
-                                  wx.cloud.database().collection('medecineremind').doc(medecine._id).update({
-                                      data: {
-                                          completed: true
-                                      }
-                                  });
-                              }
-                          }
-                      });
-                  }, timeDiffInSeconds);
-                  medecine.timerId = timerId;
-              } else {
-                  // 超时未完成提醒
-                  const overdueTimerId = setTimeout(() => {
-                      wx.vibrateShort({
-                          type: 'heavy'
-                      });
-                      wx.showModal({
-                          title: '用药提醒',
-                          content: `您还未服用${medecine.name}，请尽快服用！`,
-                          showCancel: false,
-                          success: (res) => {
-                              if (res.confirm) {
-                                  wx.cloud.database().collection('medecineremind').doc(medecine._id).update({
-                                      data: {
-                                          completed: true
-                                      }
-                                  });
-                              }
-                          }
-                      });
-                  }, 1000 * 60 * 60); // 1小时后提醒
-                  medecine.overdueTimerId = overdueTimerId;
-              }
-          }
-      });
+  
+  useOcrResult: function() {
+    const { ocrResult } = this.data;
+    
+    if (ocrResult) {
+      // 解析OCR结果中的频次
+      let frequency = 1;
+      if (ocrResult.Frequency) {
+        const match = ocrResult.Frequency.match(/\d+/);
+        if (match) {
+          frequency = parseInt(match[0]);
+        }
+      }
+      
+      // 解析OCR结果中的第一个时间
+      let firstTime = '08:00';
+      if (ocrResult.Time) {
+        const times = ocrResult.Time.split(',');
+        if (times.length > 0) {
+          firstTime = times[0];
+        }
+      }
+      
+      // 填充到表单
       this.setData({
-          medecines: medecines
+        showOcrCapture: false,
+        showManualForm: true,
+        medicineName: ocrResult.Name || '',
+        medicineDosage: ocrResult.Dosage || '',
+        medicineTime: firstTime,
+        medicineUsage: ocrResult.Usage || '口服',
+        frequency: frequency
       });
+    }
   },
-
-  onLoad(options) {
-      this.fetchMedecines();
+  
+  cancelOcr: function() {
+    this.setData({
+      showOcrCapture: false,
+      tempImagePath: '',
+      ocrResult: null,
+      ocrError: false
+    });
   },
-
-  onShow() {
-      this.setupTimers();
+  
+  switchToManual: function() {
+    this.setData({
+      showOcrCapture: false,
+      showManualForm: true,
+      tempImagePath: '',
+      ocrResult: null,
+      ocrError: false
+    });
   },
-
-  onHide() {
-      const { medecines } = this.data;
-      medecines.forEach(medecine => {
-          if (medecine.timerId) {
-              clearTimeout(medecine.timerId);
-          }
-      });
-  },
-
-  onUnload() {
-      const { medecines } = this.data;
-      medecines.forEach(medecine => {
-          if (medecine.timerId) {
-              clearTimeout(medecine.timerId);
-          }
-      });
+  
+  cameraError: function(e) {
+    console.error('相机错误', e.detail);
+    wx.showToast({
+      title: '相机启动失败，请检查权限',
+      icon: 'none'
+    });
   }
 });

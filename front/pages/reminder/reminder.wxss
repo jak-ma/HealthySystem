@@ -1,68 +1,576 @@
+/* 整体容器 */
 .container {
   padding: 20px;
   position: relative;
-  
-  
-width: 100%;
-height: 100%;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  font-size: 18px; /* 老人友好的大字体 */
 }
 
-.background-image {
-  width: 100%;
-  height: 100%;
+/* 背景 */
+.background {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f6f0; /* 柔和的米白色背景 */
   z-index: -1;
 }
 
-.input-section {
+/* 页面标题 */
+.page-title {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-.input-section input {
-  width: calc(100% - 30px);
+.page-title text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4a6fa5; /* 柔和的蓝色 */
+}
+
+/* 入口按钮区域 */
+.entry-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.entry-button {
+  width: 48%;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.manual-entry {
+  background-color: #e6f2ff; /* 淡蓝色背景 */
+}
+
+.ocr-entry {
+  background-color: #fff2e6; /* 浅黄色背景 */
+}
+
+.entry-icon {
+  width: 50px;
+  height: 50px;
   margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  display: inline-block;
-  border: solid;
 }
 
-.input-icon {
-  width: 20px;
-  height: 20px;
+.entry-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 表单区域 */
+.form-section, .ocr-section {
+  margin-bottom: 30px;
+}
+
+.form-card, .ocr-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4a6fa5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-icon {
+  width: 24px;
+  height: 24px;
   margin-right: 10px;
-  vertical-align: middle;
 }
 
-.list-section {
+.form-label text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #555555;
+}
+
+.form-input {
+  width: 100%;
+  height: 50px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 0 15px;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+/* 语音输入按钮 */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .form-input {
+  flex: 1;
+}
+
+.voice-btn {
+  width: 50px;
+  height: 50px;
+  background-color: #4CAF50;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.voice-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* 快捷选择 */
+.quick-select {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.quick-item {
+  background-color: #e6f7ff;
+  padding: 8px 15px;
+  border-radius: 20px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #4a6fa5;
+}
+
+/* 时间选择器 */
+.time-selector {
+  width: 100%;
+}
+
+.time-picker {
+  width: 100%;
+  height: 50px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+.time-quick-select {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.time-quick-item {
+  width: 30%;
+  height: 40px;
+  background-color: #e6f7ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #4a6fa5;
+}
+
+/* 频次选择器 */
+.frequency-selector {
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.frequency-btn {
+  width: 50px;
+  height: 50px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.frequency-value {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+}
+
+/* 开关 */
+.switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.switch-wrapper text {
+  margin-left: 10px;
+  font-size: 18px;
+  color: #555555;
+}
+
+/* 按钮 */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.cancel-btn, .submit-btn, .retake-btn, .confirm-btn, .retry-btn, .manual-btn, .use-result-btn {
+  width: 45%;
+  height: 50px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.cancel-btn, .retake-btn, .retry-btn {
+  background-color: #f5f5f5;
+  color: #555555;
+}
+
+.submit-btn, .confirm-btn, .manual-btn, .use-result-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* OCR相机区域 */
+.ocr-guide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.guide-text {
+  font-size: 18px;
+  color: #555555;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.camera-container {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.camera {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.camera-frame {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  border: 2px dashed #4CAF50;
+  border-radius: 10px;
+}
+
+.capture-btn {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background-color: #4CAF50;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capture-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.album-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
+/* 预览区域 */
+.preview-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.preview-image {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.preview-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* OCR结果 */
+.ocr-result {
   margin-top: 20px;
 }
 
-.medicine-item {
-  padding: 15px;
-  margin-bottom: 10px;
-  border: solid;
-  border-radius: 4px;
+.result-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4a6fa5;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-.medicine-item text {
-  display: block;
+.result-item {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.result-label {
+  width: 120px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #555555;
+}
+
+.result-value {
+  flex: 1;
+  font-size: 18px;
+  color: #333333;
+}
+
+.ocr-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* OCR错误提示 */
+.ocr-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.error-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff4d4f;
+  margin: 15px 0;
+}
+
+.error-tip {
+  font-size: 16px;
+  color: #555555;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* 药品提醒列表 */
+.reminder-list {
+  margin-top: 30px;
+}
+
+.list-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4a6fa5;
+  margin-bottom: 15px;
+}
+
+.medicine-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.medicine-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.medicine-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.medicine-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  flex: 1;
+}
+
+.medicine-dosage {
+  font-size: 16px;
+  color: #4a6fa5;
+}
+
+.medicine-info {
+  margin-bottom: 15px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
   margin-bottom: 5px;
 }
 
-.list-icon {
+.info-icon {
   width: 20px;
   height: 20px;
   margin-right: 10px;
-  vertical-align: middle;
 }
 
-.button-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
-  vertical-align: middle;
+.info-text {
+  font-size: 18px;
+  color: #555555;
+}
+
+.medicine-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.edit-btn {
+  background-color: #e6f7ff;
+  color: #4a6fa5;
+}
+
+.delete-btn {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+}
+
+/* 空列表提示 */
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.empty-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #999999;
+  margin-bottom: 10px;
+}
+
+.empty-tip {
+  font-size: 16px;
+  color: #999999;
+}
+
+/* 成功提示弹窗 */
+.success-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  width: 80%;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50;
+  margin: 20px 0;
 }

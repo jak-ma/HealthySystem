@@ -1,17 +1,22 @@
-<!-- weather.wxml -->
-<view class="weather-container">
-  <!-- 城市选择区域 -->
-  <view class="city-section">
-    <view class="city-info">
-      <text class="city-name">{{cityName}}</text>
-      <text class="location-icon" bindtap="refreshWeather">🔄</text>
+<view class="container">
+  <!-- 背景图片 -->
+  <image src="/images/weather-bg.png" mode="aspectFit" class="background-image" />
+  
+  <!-- 天气卡片 -->
+  <view class="weather-card">
+    <!-- 城市信息 -->
+    <view class="city-section">
+      <view class="city-info">
+        <image src="/icons/location.png" class="input-icon" />
+        <text class="city-name">{{cityName}}</text>
+        <image src="/icons/refresh.png" class="refresh-icon" bindtap="refreshWeather" />
+      </view>
+      <button class="custom-button change-city-btn" bindtap="changeCity">
+        <image src="/icons/city.png" class="button-icon" /> 切换城市
+      </button>
     </view>
-    <view class="city-change" bindtap="changeCity">切换城市</view>
-  </view>
 
-  <!-- 天气信息区域 -->
-  <view class="weather-info">
-    <!-- 天气图标和温度 -->
+    <!-- 主要天气信息 -->
     <view class="weather-main">
       <image class="weather-icon" src="/icons/weather/{{weatherIconCode}}.svg" mode="aspectFit"></image>
       <view class="temperature-container">
@@ -19,31 +24,41 @@
         <text class="degree">°C</text>
       </view>
     </view>
-    
+
     <!-- 天气描述 -->
     <view class="weather-desc">
       <text>{{weatherDesc}}</text>
     </view>
-    
-    <!-- 其他天气数据 -->
+
+    <!-- 天气详情 -->
     <view class="weather-details">
       <view class="detail-item">
+        <image src="/icons/humidity.png" class="detail-icon" />
         <text class="detail-label">湿度</text>
         <text class="detail-value">{{humidity}}%</text>
       </view>
       <view class="detail-item">
+        <image src="/icons/wind.png" class="detail-icon" />
         <text class="detail-label">风向</text>
         <text class="detail-value">{{windDirection}}</text>
       </view>
       <view class="detail-item">
+        <image src="/icons/wind-scale.png" class="detail-icon" />
         <text class="detail-label">风力</text>
         <text class="detail-value">{{windScale}}级</text>
       </view>
     </view>
-  </view>
 
-  <!-- 更新时间 -->
-  <view class="update-time">
-    <text>更新时间: {{updateTime}}</text>
+    <!-- 更新时间 -->
+    <view class="update-time">
+      <image src="/icons/time.png" class="time-icon" />
+      <text>更新时间: {{updateTime}}</text>
+    </view>
+
+    <!-- 天气提醒 -->
+    <view class="weather-reminder" wx:if="{{weatherReminder}}">
+      <image src="/icons/reminder.png" class="reminder-icon" />
+      <text class="reminder-text">{{weatherReminder}}</text>
+    </view>
   </view>
 </view>

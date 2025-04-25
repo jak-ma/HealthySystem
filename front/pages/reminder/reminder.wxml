@@ -1,40 +1,236 @@
 <view class="container">
-    <!-- 使用 <image/> 标签显示背景图 -->
-    <image src="../../images/love.png" mode="aspectFill" class="background-image"></image>
-    <view class="input-section">
-        <!-- 药品名称输入框图标 -->
-        <image src="../../icons/medicine.png" class="input-icon" /> 
-        <input placeholder="药品名称" bindinput="inputMedicineName" />
-        <!-- 用药时间输入框图标 -->
-        <image src="../../icons/time.png" class="input-icon" /> 
-        <input placeholder="用药时间(如:08:00,12:00)" bindinput="inputMedicineTimes" />
-        <!-- 注意事项输入框图标 -->
-        <image src="../../icons/remind.png" class="input-icon" /> 
-        <input placeholder="注意事项" bindinput="inputMedicineNote" />
-        <button bindtap="addMedicine" type="primary">
-            <!-- 添加按钮图标 -->
-            <image src="../../icons/add_med.png" class="button-icon" /> 
-            添加
-        </button>
+    <!-- 背景使用柔和的颜色 -->
+    <view class="background"></view>
+    
+    <!-- 页面标题 -->
+    <view class="page-title">
+        <text>用药提醒</text>
     </view>
-    <view class="list-section">
-        <block wx:for="{{medicineList}}" wx:key="_id">
-            <view class="medicine-item">
-                <!-- 列表项药品图标 -->
-                <image src="../../icons/medicine.png" class="list-icon" /> 
-                <text>药品: {{item.name}}</text>
-                <!-- 列表项时间图标 -->
-                <image src="../../icons/time.png" class="list-icon" /> 
-                <text>时间: {{item.times}}</text>
-                <!-- 列表项注意事项图标 -->
-                <image src="../../icons/remind.png" class="list-icon" /> 
-                <text>注意: {{item.note}}</text>
-                <button bindtap="deleteMedicine" data-id="{{item._id}}" type="warn">
-                    <!-- 删除按钮图标 -->
-                    <image src="../../icons/delete.png" class="button-icon" /> 
-                    删除
-                </button>
+
+    <!-- 两个主要入口按钮 -->
+    <view class="entry-buttons">
+        <view class="entry-button manual-entry" bindtap="showManualForm">
+            <image src="../../icons/medicine.png" class="entry-icon"></image>
+            <text class="entry-text">手动添加</text>
+        </view>
+        
+        <view class="entry-button ocr-entry" bindtap="showOcrCapture">
+            <image src="../../icons/photo.png" class="entry-icon"></image>
+            <text class="entry-text">拍照识别处方</text>
+        </view>
+    </view>
+
+    <!-- 手动录入表单 -->
+    <view class="form-section" wx:if="{{showManualForm}}">
+        <view class="form-card">
+            <view class="form-title">添加用药提醒</view>
+            
+            <!-- 药品名称输入 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/medicine.png" class="form-icon"></image>
+                    <text>药品名称</text>
+                </view>
+                <view class="input-wrapper">
+                    <input placeholder="请输入药品名称" value="{{medicineName}}" bindinput="onMedicineNameInput" class="form-input"/>
+                    <view class="voice-btn" bindtap="startVoiceInput" data-field="medicineName">
+                        <image src="../../icons/remind.png" class="voice-icon"></image>
+                    </view>
+                </view>
+                <!-- 常用药品快捷选择 -->
+                <view class="quick-select">
+                    <view class="quick-item" bindtap="selectQuickMedicine" data-name="降压药">降压药</view>
+                    <view class="quick-item" bindtap="selectQuickMedicine" data-name="降糖药">降糖药</view>
+                    <view class="quick-item" bindtap="selectQuickMedicine" data-name="心脏病药">心脏病药</view>
+                </view>
+            </view>
+            
+            <!-- 用药剂量 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/medicine.png" class="form-icon"></image>
+                    <text>用药剂量</text>
+                </view>
+                <input placeholder="请输入剂量，如100mg" value="{{medicineDosage}}" bindinput="onMedicineDosageInput" class="form-input"/>
+            </view>
+            
+            <!-- 用药时间选择 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/time.png" class="form-icon"></image>
+                    <text>用药时间</text>
+                </view>
+                <view class="time-selector">
+                    <picker mode="time" value="{{medicineTime}}" start="00:00" end="23:59" bindchange="onTimeChange">
+                        <view class="time-picker">{{medicineTime || '08:00'}}</view>
+                    </picker>
+                    <!-- 时段快捷选择 -->
+                    <view class="time-quick-select">
+                        <view class="time-quick-item" bindtap="selectQuickTime" data-time="08:00">早上</view>
+                        <view class="time-quick-item" bindtap="selectQuickTime" data-time="12:00">中午</view>
+                        <view class="time-quick-item" bindtap="selectQuickTime" data-time="18:00">晚上</view>
+                    </view>
+                </view>
+            </view>
+            
+            <!-- 用药频次 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/time.png" class="form-icon"></image>
+                    <text>用药频次</text>
+                </view>
+                <view class="frequency-selector">
+                    <view class="frequency-btn minus" bindtap="decreaseFrequency">-</view>
+                    <view class="frequency-value">每日 {{frequency}} 次</view>
+                    <view class="frequency-btn plus" bindtap="increaseFrequency">+</view>
+                </view>
+            </view>
+            
+            <!-- 用药方式 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/remind.png" class="form-icon"></image>
+                    <text>用药方式</text>
+                </view>
+                <input placeholder="如：口服、外用等" value="{{medicineUsage}}" bindinput="onMedicineUsageInput" class="form-input"/>
+            </view>
+            
+            <!-- 提醒设置 -->
+            <view class="form-item">
+                <view class="form-label">
+                    <image src="../../icons/remind.png" class="form-icon"></image>
+                    <text>提前提醒</text>
+                </view>
+                <view class="switch-wrapper">
+                    <switch checked="{{enableEarlyRemind}}" bindchange="toggleEarlyRemind" color="#4CAF50"/>
+                    <text>提前10分钟提醒</text>
+                </view>
+            </view>
+            
+            <!-- 提交按钮 -->
+            <view class="form-buttons">
+                <button class="cancel-btn" bindtap="hideManualForm">取消</button>
+                <button class="submit-btn" bindtap="addMedicineReminder">保存提醒</button>
+            </view>
+        </view>
+    </view>
+
+    <!-- OCR拍照识别界面 -->
+    <view class="ocr-section" wx:if="{{showOcrCapture}}">
+        <view class="ocr-card">
+            <view class="form-title">拍照识别处方</view>
+            
+            <!-- 拍照引导 -->
+            <view class="ocr-guide">
+                <text class="guide-text">请将处方单平铺，对准下方框内拍摄</text>
+                <view class="camera-container" wx:if="{{!tempImagePath}}">
+                    <camera device-position="back" flash="off" binderror="cameraError" class="camera"></camera>
+                    <view class="camera-frame"></view>
+                    <view class="capture-btn" bindtap="takePhoto">
+                        <image src="../../icons/photo.png" class="capture-icon"></image>
+                    </view>
+                    <view class="album-btn" bindtap="chooseImage">
+                        <image src="../../icons/photo.png" class="album-icon"></image>
+                        <text>从相册选择</text>
+                    </view>
+                </view>
+                
+                <!-- 拍照预览 -->
+                <view class="preview-container" wx:if="{{tempImagePath}}">
+                    <image src="{{tempImagePath}}" mode="aspectFit" class="preview-image"></image>
+                    <view class="preview-buttons">
+                        <button class="retake-btn" bindtap="retakePhoto">重新拍摄</button>
+                        <button class="confirm-btn" bindtap="confirmPhoto">确认使用</button>
+                    </view>
+                </view>
+            </view>
+            
+            <!-- OCR识别结果 -->
+            <view class="ocr-result" wx:if="{{ocrResult}}">
+                <view class="result-title">识别结果</view>
+                <view class="result-item">
+                    <text class="result-label">药品名称:</text>
+                    <text class="result-value">{{ocrResult.Name}}</text>
+                </view>
+                <view class="result-item">
+                    <text class="result-label">用药剂量:</text>
+                    <text class="result-value">{{ocrResult.Dosage}}</text>
+                </view>
+                <view class="result-item">
+                    <text class="result-label">用药时间:</text>
+                    <text class="result-value">{{ocrResult.Time}}</text>
+                </view>
+                <view class="result-item">
+                    <text class="result-label">用药频次:</text>
+                    <text class="result-value">{{ocrResult.Frequency}}</text>
+                </view>
+                <view class="result-item">
+                    <text class="result-label">用药方式:</text>
+                    <text class="result-value">{{ocrResult.Usage}}</text>
+                </view>
+                
+                <view class="ocr-buttons">
+                    <button class="cancel-btn" bindtap="cancelOcr">取消</button>
+                    <button class="use-result-btn" bindtap="useOcrResult">使用结果</button>
+                </view>
+            </view>
+            
+            <!-- OCR识别失败提示 -->
+            <view class="ocr-error" wx:if="{{ocrError}}">
+                <icon type="warn" size="64"></icon>
+                <text class="error-text">未能识别处方信息</text>
+                <text class="error-tip">请确保处方清晰可见，或尝试手动输入</text>
+                <view class="error-buttons">
+                    <button class="retry-btn" bindtap="retakePhoto">重新拍摄</button>
+                    <button class="manual-btn" bindtap="switchToManual">手动输入</button>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 药品提醒列表 -->
+    <view class="reminder-list">
+        <view class="list-title">我的用药提醒</view>
+        <block wx:if="{{medicineList.length > 0}}">
+            <view class="medicine-card" wx:for="{{medicineList}}" wx:key="_id">
+                <view class="medicine-header">
+                    <image src="../../icons/medicine.png" class="medicine-icon"></image>
+                    <text class="medicine-name">{{item.name}}</text>
+                    <text class="medicine-dosage">{{item.dosage}}</text>
+                </view>
+                <view class="medicine-info">
+                    <view class="info-item">
+                        <image src="../../icons/time.png" class="info-icon"></image>
+                        <text class="info-text">时间: {{item.time}}</text>
+                    </view>
+                    <view class="info-item">
+                        <image src="../../icons/remind.png" class="info-icon"></image>
+                        <text class="info-text">方式: {{item.usage || '口服'}}</text>
+                    </view>
+                </view>
+                <view class="medicine-actions">
+                    <view class="action-btn edit-btn" bindtap="editMedicine" data-id="{{item._id}}">
+                        <text>编辑</text>
+                    </view>
+                    <view class="action-btn delete-btn" bindtap="deleteMedicine" data-id="{{item._id}}">
+                        <text>删除</text>
+                    </view>
+                </view>
             </view>
         </block>
+        <view class="empty-list" wx:else>
+            <image src="../../icons/medicine.png" class="empty-icon"></image>
+            <text class="empty-text">暂无用药提醒</text>
+            <text class="empty-tip">点击上方按钮添加提醒</text>
+        </view>
+    </view>
+
+    <!-- 成功提示弹窗 -->
+    <view class="success-modal" wx:if="{{showSuccessModal}}">
+        <view class="modal-content">
+            <icon type="success" size="64"></icon>
+            <text class="success-text">提醒已设置！</text>
+            <button class="confirm-btn" bindtap="hideSuccessModal">确定</button>
+        </view>
     </view>
 </view>

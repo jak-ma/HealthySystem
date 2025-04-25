@@ -293,28 +293,53 @@ Page({
   // 获取健康资讯数据
   getHealthNews: function() {
     const that = this;
-    wx.cloud.callFunction({
-      name: 'getHealthNews',
+    wx.showLoading({ title: '加载健康资讯...' });
+    
+    // 调用天聚数行健康资讯API
+    wx.request({
+      url: 'https://apis.tianapi.com/health/index',
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      data: {
+        key: '8090c674e5ccb65367301335f0811390',
+        num: 10
+      },
       success: function(res) {
         console.log('获取健康资讯成功:', res);
-        if (res.result && res.result.code === 0) {
+        if (res.data && res.data.code === 200) {
+          // 转换API返回的数据格式
+          const newsData = res.data.result.newslist.map(item => ({
+            id: item.id,
+            title: item.title,
+            image: item.picUrl,
+            date: item.ctime,
+            source: item.source,
+            description: item.description,
+            url: item.url
+          }));
+          
           that.setData({
-            healthNews: res.result.data
+            healthNews: newsData
           });
         } else {
           console.error('获取健康资讯失败:', res);
           wx.showToast({
-            title: '获取健康资讯失败',
+            title: '获取健康资讯失败: ' + (res.data ? res.data.msg : '未知错误'),
             icon: 'none'
           });
         }
       },
       fail: function(err) {
-        console.error('调用云函数失败:', err);
+        console.error('请求健康资讯API失败:', err);
         wx.showToast({
           title: '网络错误，请重试',
           icon: 'none'
         });
+      },
+      complete: function() {
+        wx.hideLoading();
       }
     });
   },
@@ -325,18 +350,10 @@ Page({
     const newsItem = this.data.healthNews.find(item => item.id === id);
     
     if (newsItem) {
-      // 这里可以跳转到详情页，或者显示一个模态框
-      wx.showModal({
-        title: newsItem.title,
-        content: newsItem.content,
-        showCancel: false,
-        confirmText: '我知道了'
+      // 跳转到详情页面，使用webview打开原文链接
+      wx.navigateTo({
+        url: `/pages/webview/webview?url=${encodeURIComponent(newsItem.url)}&title=${encodeURIComponent(newsItem.title)}`
       });
-      
-      // 如果有详情页，可以使用以下代码跳转
-      // wx.navigateTo({
-      //   url: `/pages/news/detail?id=${id}`
-      // });
     }
   },
 

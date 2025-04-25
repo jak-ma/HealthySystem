@@ -1,0 +1,51 @@
+/* webview.wxss */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 40rpx;
+  height: 80vh;
+}
+
+.error-icon {
+  font-size: 120rpx;
+  margin-bottom: 40rpx;
+  color: #ff4d4f;
+}
+
+.error-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.error-message {
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+  margin-bottom: 40rpx;
+  line-height: 1.6;
+}
+
+.error-tips {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 60rpx;
+  background-color: #f8f8f8;
+  padding: 20rpx 30rpx;
+  border-radius: 8rpx;
+  width: 80%;
+}
+
+.back-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 20rpx 60rpx;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  margin-top: 20rpx;
+}
+/* 网页视图不需要额外样式 */

@@ -77,11 +77,16 @@
             class="news-item"
             bindtap="handleNewsItemTap"
             data-id="{{item.id}}"
+            hover-class="news-item-hover"
           >
             <image src="{{item.image}}" class="news-image" mode="aspectFill"/>
             <view class="news-content">
               <text class="news-title">{{item.title}}</text>
-              <text class="news-date">{{item.date}}</text>
+              <text class="news-desc">{{item.description}}</text>
+              <view class="news-footer">
+                <text class="news-source">{{item.source}}</text>
+                <text class="news-date">{{item.date}}</text>
+              </view>
             </view>
           </view>
         </block>

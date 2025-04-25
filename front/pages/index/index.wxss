@@ -173,8 +173,37 @@
   overflow: hidden;
 }
 
-.news-date {
+.news-desc {
   font-size: 24rpx;
-  color: #999;
+  color: #666;
+  margin-top: 8rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.news-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 10rpx;
+}
+
+.news-source {
+  font-size: 22rpx;
+  color: #0066cc;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.news-date {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.news-item-hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }

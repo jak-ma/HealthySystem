@@ -1,14 +1,16 @@
 {
   "pages": [
     "pages/login/login",
-    "pages/register/register",
+    "pages/register/personal",
+    "pages/register/group",
     "pages/index/index",
     "pages/health/health",
     "pages/diet/diet",
     "pages/mine/mine",
     "pages/weather/weather",
     "pages/reminder/reminder",
-    "pages/diet-history/diet-history"
+    "pages/diet-history/diet-history",
+    "pages/webview/webview"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

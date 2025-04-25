@@ -1,0 +1,14 @@
+<!-- webview.wxml -->
+<block wx:if="{{!error}}">
+  <web-view src="{{url}}"></web-view>
+</block>
+
+<block wx:else>
+  <view class="error-container">
+    <view class="error-icon">❌</view>
+    <view class="error-title">无法打开该页面</view>
+    <view class="error-message">{{errorMsg}}</view>
+    <view class="error-tips">提示：该问题需要在小程序管理后台配置业务域名才能解决</view>
+    <button class="back-button" bindtap="backToHome">返回首页</button>
+  </view>
+</block>
